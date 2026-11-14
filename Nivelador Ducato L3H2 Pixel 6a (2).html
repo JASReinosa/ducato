@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="Nivel Ducato" />
+  <title>DUCATO L3H2 · FIAMMA 4/8/12 cm</title>
+
+  <!-- Icono vectorial embebido para acceso directo en Android (Pixel Launcher) -->
+  <link id="appIcon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='120' fill='%23000000'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%23090d16' stroke='%2338bdf8' stroke-width='20'/%3E%3Cline x1='56' y1='256' x2='456' y2='256' stroke='%231e293b' stroke-width='10'/%3E%3Cline x1='256' y1='56' x2='256' y2='456' stroke='%231e293b' stroke-width='10'/%3E%3Ccircle cx='256' cy='256' r='56' fill='%2310b981'/%3E%3C/svg%3E" />
+
+  <!-- Tailwind CSS + Estilos OLED nativos para funcionamiento 100% offline -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --oled-bg: #000000;
+      --card-bg: #090d16;
+      --card-border: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --c-green: #10b981;
+      --c-blue: #38bdf8;
+      --c-amber: #f59e0b;
+      --c-orange: #f97316;
+      --c-red: #ef4444;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--oled-bg);
+      color: var(--text-main);
+      font-family: "Inter", system-ui, -apple-system, Roboto, sans-serif;
+      touch-action: manipulation;
+    }
+
+    /* Estructura fija de 1 sola pantalla para Pixel 6a (412x915 px) */
+    .pixel-screen {
+      width: 100%;
+      max-width: 460px;
+      height: 100dvh;
+      margin: 0 auto;
+      padding: 8px 10px 10px 10px;
+      display: grid;
+      grid-template-rows: auto auto auto 1fr auto auto;
+      gap: 7px;
+      background-color: #000000;
+    }
+
+    /* 1. Cabecera */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 7px 10px;
+    }
+
+    .app-title {
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 4px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+    }
+
+    .status-pill.blocked {
+      border-color: rgba(245, 158, 11, 0.55);
+      background: rgba(245, 158, 11, 0.16);
+      color: #fbbf24;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: currentColor;
+    }
+
+    .pulse-dot.blinking {
+      animation: pulseBlink 1s infinite ease-in-out;
+    }
+
+    @keyframes pulseBlink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
+
+    /* Barra compacta de respaldo si Android bloquea file:// */
+    .fallback-strip {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.45);
+      border-radius: 10px;
+      padding: 5px 9px;
+      font-size: 0.68rem;
+      color: #fde68a;
+    }
+
+    .fallback-strip.visible {
+      display: flex;
+    }
+
+    .help-chip {
+      background: #f59e0b;
+      color: #000000;
+      font-weight: 900;
+      font-size: 0.66rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      border: none;
+      cursor: pointer;
+    }
+
+    /* 2. Centro Visual: Diana 2D + Grados Cabeceo y Alabeo */
+    .visual-center {
+      display: grid;
+      grid-template-columns: 112px 1fr;
+      gap: 8px;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 8px 10px;
+    }
+
+    .bullseye {
+      position: relative;
+      width: 104px;
+      height: 104px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #111827 0%, #030712 80%);
+      border: 2px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      touch-action: none;
+      overflow: hidden;
+    }
+
+    .bullseye-cross-h {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: rgba(148, 163, 184, 0.22);
+    }
+
+    .bullseye-cross-v {
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      background: rgba(148, 163, 184, 0.22);
+    }
+
+    .bullseye-ring-outer {
+      position: absolute;
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      border: 1px dashed rgba(148, 163, 184, 0.35);
+    }
+
+    .bullseye-ring-ok {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--c-green);
+    }
+
+    .bubble {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #6ee7b7, #10b981);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+      transition: transform 0.05s linear;
+      pointer-events: none;
+    }
+
+    .angles-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .angle-box {
+      background: #000000;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 5px 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .angle-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .angle-title {
+      font-size: 0.64rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .angle-sub {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .angle-deg {
+      font-size: 1.3rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .step-adj-group {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .adj-btn {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: #111827;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      font-size: 1rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .adj-btn:active {
+      background: #1e293b;
+      border-color: #38bdf8;
+      transform: scale(0.94);
+    }
+
+    /* 3. Cuadrícula 2x2 de las 4 Ruedas */
+    .wheels-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 7px;
+      min-height: 0;
+    }
+
+    .wheel-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 13px;
+      padding: 7px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+    }
+
+    .wheel-card.step-0-border { border-color: rgba(16, 185, 129, 0.5); }
+    .wheel-card.step-1-border { border-color: rgba(56, 189, 248, 0.75); }
+    .wheel-card.step-2-border { border-color: rgba(245, 158, 11, 0.8); }
+    .wheel-card.step-3-border { border-color: rgba(249, 115, 22, 0.85); }
+    .wheel-card.step-4-border { border-color: rgba(239, 68, 68, 0.95); background: rgba(239, 68, 68, 0.07); }
+
+    .wheel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .wheel-name {
+      font-size: 0.7rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+    }
+
+    .wheel-side {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .wheel-main-readout {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 1px 0;
+    }
+
+    .wheel-cm {
+      font-size: 1.45rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+
+    .wheel-cm-hint {
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .step-pill {
+      width: 100%;
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 900;
+      padding: 3px 4px;
+      border-radius: 6px;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pill-green  { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .pill-blue   { background: rgba(56, 189, 248, 0.2);  color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.45); }
+    .pill-amber  { background: rgba(245, 158, 11, 0.22); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.5); }
+    .pill-orange { background: rgba(249, 115, 22, 0.24); color: #fdba74; border: 1px solid rgba(249, 115, 22, 0.55); }
+    .pill-red    { background: rgba(239, 68, 68, 0.28);  color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.65); }
+
+    /* Gráfico de 4 barras Fiamma: 4cm, 8cm, 12cm y Tope 16cm */
+    .fiamma-bars {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 0.85fr;
+      gap: 4px;
+      align-items: end;
+      height: 22px;
+      margin: 2px 0;
+    }
+
+    .f-bar {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 3px 3px 1px 1px;
+      font-size: 0.54rem;
+      font-weight: 800;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .f-bar.b1 { height: 48%; }
+    .f-bar.b2 { height: 68%; }
+    .f-bar.b3 { height: 86%; }
+    .f-bar.b4 {
+      height: 100%;
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #991b1b;
+    }
+
+    .f-bar.active-1 { background: var(--c-blue);   border-color: #bae6fd; color: #000; }
+    .f-bar.active-2 { background: var(--c-amber);  border-color: #fde68a; color: #000; }
+    .f-bar.active-3 { background: var(--c-orange); border-color: #fed7aa; color: #000; }
+    .f-bar.active-4 { background: var(--c-red);    border-color: #fecaca; color: #fff; }
+
+    /* Cota respecto al plano central */
+    .center-plane-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #141c2b;
+      padding-top: 3px;
+      font-size: 0.63rem;
+      font-weight: 800;
+    }
+
+    .center-plane-lbl {
+      color: #64748b;
+    }
+
+    .center-plane-val {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 4. Franja resumen de 1 línea debajo de las ruedas */
+    .summary-strip {
+      background: #070b14;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    /* 5. Barra inferior con SOLO 3 botones grandes táctiles */
+    .bottom-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    .tactile-btn {
+      background: #0d1322;
+      border: 1.5px solid #26354d;
+      border-radius: 12px;
+      padding: 10px 4px;
+      color: #f8fafc;
+      font-size: 0.68rem;
+      font-weight: 900;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-height: 48px;
+      transition: transform 0.1s ease, border-color 0.15s ease;
+    }
+
+    .tactile-btn:active {
+      transform: scale(0.96);
+    }
+
+    .tactile-btn.active-tare {
+      border-color: var(--c-amber);
+      background: rgba(245, 158, 11, 0.14);
+      color: #fcd34d;
+    }
+
+    .tactile-btn.active-audio {
+      border-color: var(--c-green);
+      background: rgba(16, 185, 129, 0.16);
+      color: #6ee7b7;
+    }
+
+    /* Modal de ayuda 1 toque para desbloquear sensores en Pixel 6a */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 50;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #090d16;
+      border: 1.5px solid #38bdf8;
+      border-radius: 16px;
+      padding: 16px;
+      max-width: 390px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="pixel-screen">
+    <!-- 1. CABECERA COMPACTA -->
+    <header class="top-bar">
+      <div class="app-title">DUCATO L3H2 · FIAMMA 4/8/12 cm</div>
+      <div id="statusPill" class="status-pill" title="Toca para diagnóstico de sensores">
+        <span id="statusDot" class="pulse-dot blinking"></span>
+        <span id="statusText">🟢 EN VIVO · -- Hz</span>
+      </div>
+    </header>
+
+    <!-- BARRA PLEGABLE DE RESPALDO SI SE ABRE DESDE ARCHIVO LOCAL (file:// o content://) -->
+    <div id="fallbackStrip" class="fallback-strip">
+      <span id="fallbackReasonText">👆 Usa - / + o arrastra la diana para poner los grados:</span>
+      <button id="btnOpenHelp" type="button" class="help-chip">❓ Por qué no lee</button>
+    </div>
+
+    <!-- 2. CENTRO VISUAL: NIVEL DE BURBUJA 2D + CABECEO Y ALABEO -->
+    <section class="visual-center">
+      <div id="bullseyePad" class="bullseye" aria-label="Nivel de burbuja 2D interactivo">
+        <div class="bullseye-cross-h"></div>
+        <div class="bullseye-cross-v"></div>
+        <div class="bullseye-ring-outer"></div>
+        <div class="bullseye-ring-ok"></div>
+        <div id="bubbleDot" class="bubble"></div>
+      </div>
+
+      <div class="angles-col">
+        <div class="angle-box">
+          <div class="angle-meta">
+            <span class="angle-title">Cabeceo (Del / Tras)</span>
+            <span id="pitchDirLbl" class="angle-sub">A nivel longitudinal</span>
+          </div>
+          <div class="step-adj-group">
+            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', -0.2)" aria-label="Bajar cabeceo">−</button>
+            <span id="pitchDegVal" class="angle-deg" style="color: var(--c-green); min-width: 48px; text-align: right;">0,0°</span>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', 0.2)" aria-label="Subir cabeceo">+</button>
+          </div>
+        </div>
+
+        <div class="angle-box">
+          <div class="angle-meta">
+            <span class="angle-title">Alabeo (Izq / Der)</span>
+            <span id="rollDirLbl" class="angle-sub">A nivel transversal</span>
+          </div>
+          <div class="step-adj-group">
+            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', -0.2)" aria-label="Inclinar izquierda">−</button>
+            <span id="rollDegVal" class="angle-deg" style="color: var(--c-green); min-width: 48px; text-align: right;">0,0°</span>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', 0.2)" aria-label="Inclinar derecha">+</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CUADRÍCULA 2x2 DE LAS 4 RUEDAS -->
+    <section class="wheels-grid">
+      <!-- DEL. IZQUIERDA (FL) -->
+      <article id="card-FL" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">DEL. IZQUIERDA</span>
+          <span class="wheel-side">Piloto</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-FL" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-FL" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-FL" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-FL" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+
+      <!-- DEL. DERECHA (FR) -->
+      <article id="card-FR" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">DEL. DERECHA</span>
+          <span class="wheel-side">Copiloto</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-FR" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-FR" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-FR" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-FR" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+
+      <!-- TRAS. IZQUIERDA (RL) -->
+      <article id="card-RL" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">TRAS. IZQUIERDA</span>
+          <span class="wheel-side">Piloto</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-RL" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-RL" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-RL" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-RL" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+
+      <!-- TRAS. DERECHA (RR) -->
+      <article id="card-RR" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">TRAS. DERECHA</span>
+          <span class="wheel-side">Corredera</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-RR" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-RR" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-RR" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-RR" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- 4. FRANJA RESUMEN DE 1 LÍNEA DEBAJO DE LAS RUEDAS -->
+    <div id="summaryLine" class="summary-strip">
+      ✅ Furgoneta a nivel · Ninguna rueda necesita calzo
+    </div>
+
+    <!-- 5. BARRA INFERIOR CON SOLO 3 BOTONES GRANDES TÁCTILES -->
+    <footer class="bottom-bar">
+      <button id="btnTare" type="button" class="tactile-btn">
+        <span id="btnTareLabel">🎯 TARAR CERO COCINA</span>
+      </button>
+
+      <button id="btnOrient" type="button" class="tactile-btn">
+        <span id="btnOrientLabel">📱 MÓVIL: ⬆️ CABINA</span>
+      </button>
+
+      <button id="btnBeep" type="button" class="tactile-btn">
+        <span id="btnBeepLabel">🔊 PITIDO: OFF</span>
+      </button>
+    </footer>
+  </main>
+
+  <!-- MODAL DE AYUDA DE 1 TOQUE SI ANDROID BLOQUEA ARCHIVOS LOCALES (file://) -->
+  <div id="helpModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-sm font-black text-white">📱 Por qué tu app instalada sí lee y el HTML no</h2>
+        <button id="btnCloseHelp" type="button" class="text-slate-400 font-bold text-sm px-2">✕</button>
+      </div>
+      <div class="text-xs text-slate-300 space-y-2 leading-relaxed">
+        <p id="diagExactCause" class="p-2 rounded bg-amber-950/60 border border-amber-500/40 text-amber-200 font-semibold"></p>
+        <p>
+          <strong class="text-white">¿Por qué pasa esto en el Pixel 6a?</strong><br/>
+          Las apps de Play Store tienen permiso directo de Android. En cambio, Google Chrome <strong>prohíbe por seguridad</strong> leer el giroscopio si abres un archivo descargado (<code>file://</code> o <code>content://</code>) o dentro del recuadro de vista previa de Gemini. Chrome exige que el archivo esté en una dirección <code>https://</code>.
+        </p>
+        <p>
+          <strong class="text-sky-400">Opción 1 (Rápida con tu app instalada):</strong><br/>
+          Mira los 2 ángulos en tu app instalada y márcalos aquí con los botones <strong>− / +</strong> o moviendo la burbuja con el dedo.
+        </p>
+        <p>
+          <strong class="text-emerald-400">Opción 2 (Activar sensores en vivo + Offline):</strong><br/>
+          Sube este archivo <code>.html</code> gratis a <strong>app.netlify.com/drop</strong> o <strong>tiiny.host</strong>. Te dará un enlace <code>https://</code>: al abrirlo en Chrome en tu Pixel 6a los sensores se moverán solos en tiempo real y podrás darle a <em>"Añadir a pantalla de inicio"</em>.
+        </p>
+      </div>
+      <div class="flex justify-end gap-2 pt-1">
+        <button id="btnRetrySensors" type="button" class="help-chip" style="background:#38bdf8; padding:6px 12px;">
+          🔄 Probar sensores
+        </button>
+        <button id="btnOkHelp" type="button" class="help-chip" style="padding:6px 12px;">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       COTAS FIJAS: FIAT DUCATO L3H2 + FIAMMA KIT LEVEL UP PREMIUM S (4/8/12/16 cm)
+       ========================================================================== */
+    const WHEELBASE_CM = 403.5; // Batalla Ducato L3 (cm)
+    const TRACK_CM = 180.0;     // Vía Ducato (cm)
+
+    const ORIENTATIONS = [
+      { id: 'FRONT', label: '📱 MÓVIL: ⬆️ CABINA' },
+      { id: 'LEFT',  label: '📱 MÓVIL: ⬅️ PASILLO' },
+      { id: 'REAR',  label: '📱 MÓVIL: ⬇️ TRASERAS' },
+      { id: 'RIGHT', label: '📱 MÓVIL: ➡️ CORREDERA' }
+    ];
+
+    const state = {
+      rawBeta: 0.0,
+      rawGamma: 0.0,
+      smoothPitch: 0.0,
+      smoothRoll: 0.0,
+      hasTare: localStorage.getItem('p6a_ducato_has_tare') === '1',
+      tarePitch: parseFloat(localStorage.getItem('p6a_ducato_tare_p')) || 0.0,
+      tareRoll: parseFloat(localStorage.getItem('p6a_ducato_tare_r')) || 0.0,
+      orientIdx: parseInt(localStorage.getItem('p6a_ducato_orient_idx') || '0', 10),
+      packetsThisSec: 0,
+      totalPackets: 0,
+      lastOrientationEventTs: 0,
+      isBlockedFallback: false,
+      audioOn: false,
+      audioCtx: null,
+      beepTimer: null
+    };
+
+    if (isNaN(state.orientIdx) || state.orientIdx < 0 || state.orientIdx > 3) {
+      state.orientIdx = 0;
+    }
+
+    function fmtNum(n) {
+      const clean = Math.abs(n) < 0.05 ? 0 : n;
+      return clean.toFixed(1).replace('.', ',');
+    }
+
+    /* ==========================================================================
+       ESCALONES EXACTOS FIAMMA LEVEL UP PREMIUM S
+       - < 1,5 cm: SUELO (0 cm) en verde
+       - 1,5 a 5,9 cm: ESCALÓN 1 (4 cm) en azul
+       - 6,0 a 9,9 cm: ESCALÓN 2 (8 cm) en ámbar
+       - 10,0 a 13,5 cm: ESCALÓN 3 (12 cm) en naranja
+       - > 13,5 cm: ⚠️ >12 cm (TOPE 16 cm) en rojo
+       ========================================================================== */
+    function evaluateFiammaStep(cm) {
+      if (cm < 1.5) {
+        return {
+          barIdx: 0,
+          text: 'SUELO (0 cm)',
+          shortText: 'Suelo (0 cm)',
+          pillClass: 'pill-green',
+          borderClass: 'step-0-border',
+          colorHex: 'var(--c-green)'
+        };
+      }
+      if (cm < 6.0) {
+        return {
+          barIdx: 1,
+          text: 'ESCALÓN 1 (4 cm)',
+          shortText: 'Escalón 1 (4 cm)',
+          pillClass: 'pill-blue',
+          borderClass: 'step-1-border',
+          colorHex: 'var(--c-blue)'
+        };
+      }
+      if (cm < 10.0) {
+        return {
+          barIdx: 2,
+          text: 'ESCALÓN 2 (8 cm)',
+          shortText: 'Escalón 2 (8 cm)',
+          pillClass: 'pill-amber',
+          borderClass: 'step-2-border',
+          colorHex: 'var(--c-amber)'
+        };
+      }
+      if (cm <= 13.5) {
+        return {
+          barIdx: 3,
+          text: 'ESCALÓN 3 (12 cm)',
+          shortText: 'Escalón 3 (12 cm)',
+          pillClass: 'pill-orange',
+          borderClass: 'step-3-border',
+          colorHex: 'var(--c-orange)'
+        };
+      }
+      return {
+        barIdx: 4,
+        text: '⚠️ >12 cm (TOPE 16 cm)',
+        shortText: '⚠️ >12 cm (Tope 16 cm)',
+        pillClass: 'pill-red',
+        borderClass: 'step-4-border',
+        colorHex: 'var(--c-red)'
+      };
+    }
+
+    /* ==========================================================================
+       MAPEO DE ORIENTACIÓN DEL PIXEL 6a POSADO EN LA ENCIMERA DE COCINA
+       ========================================================================== */
+    function mapPhoneToVan(beta, gamma) {
+      const mode = ORIENTATIONS[state.orientIdx].id;
+      switch (mode) {
+        case 'FRONT': // Parte superior del Pixel 6a apunta a Cabina
+          return { pitch: beta, roll: gamma };
+        case 'LEFT':  // Parte superior apunta al Pasillo (Lado Piloto)
+          return { pitch: -gamma, roll: beta };
+        case 'REAR':  // Parte superior apunta a Puertas Traseras
+          return { pitch: -beta, roll: -gamma };
+        case 'RIGHT': // Parte superior apunta a Puerta Corredera
+          return { pitch: gamma, roll: -beta };
+        default:
+          return { pitch: beta, roll: gamma };
+      }
+    }
+
+    /* ==========================================================================
+       LECTURA AUTOMÁTICA DE SENSORES EN PARALELO (DEVICEMOTION + DEVICEORIENTATION)
+       ========================================================================== */
+    function processIncomingAngles(betaDeg, gammaDeg) {
+      if (typeof betaDeg !== 'number' || typeof gammaDeg !== 'number' || isNaN(betaDeg) || isNaN(gammaDeg)) {
+        return;
+      }
+
+      state.rawBeta = betaDeg;
+      state.rawGamma = gammaDeg;
+      state.packetsThisSec++;
+      state.totalPackets++;
+
+      if (state.isBlockedFallback) {
+        state.isBlockedFallback = false;
+        document.getElementById('fallbackStrip').classList.remove('visible');
+        const pill = document.getElementById('statusPill');
+        pill.classList.remove('blocked');
+        document.getElementById('statusDot').classList.add('blinking');
+      }
+
+      const mapped = mapPhoneToVan(betaDeg, gammaDeg);
+      const alpha = 0.22; // Suavizado exponencial para lectura estable sobre encimera
+      if (state.totalPackets === 1) {
+        state.smoothPitch = mapped.pitch;
+        state.smoothRoll = mapped.roll;
+      } else {
+        state.smoothPitch += alpha * (mapped.pitch - state.smoothPitch);
+        state.smoothRoll += alpha * (mapped.roll - state.smoothRoll);
+      }
+
+      renderScreen();
+    }
+
+    function onDeviceMotion(event) {
+      // Si deviceorientation ya está entregando datos frescos (<150 ms), evitar doble suma
+      if (performance.now() - state.lastOrientationEventTs < 150) return;
+
+      const acc = event.accelerationIncludingGravity;
+      if (!acc || acc.x === null || acc.y === null || acc.z === null) return;
+
+      const x = acc.x;
+      const y = acc.y;
+      const z = acc.z;
+      if (Math.hypot(x, y, z) < 1.0) return;
+
+      // En el Pixel 6a apoyado pantalla arriba sobre la encimera:
+      // Calculamos beta (cabeceo) y gamma (alabeo) mediante Math.atan2
+      const zSafe = Math.abs(z) < 0.001 ? 0.001 : z;
+      const betaDeg = Math.atan2(y, zSafe) * (180 / Math.PI);
+      const gammaDeg = Math.atan2(-x, Math.hypot(y, zSafe)) * (180 / Math.PI);
+
+      processIncomingAngles(betaDeg, gammaDeg);
+    }
+
+    function onDeviceOrientation(event) {
+      if (event.beta === null || event.gamma === null) return;
+      state.lastOrientationEventTs = performance.now();
+      processIncomingAngles(event.beta, event.gamma);
+    }
+
+    function startPixelSensors() {
+      window.addEventListener('devicemotion', onDeviceMotion, true);
+      window.addEventListener('deviceorientation', onDeviceOrientation, true);
+      window.addEventListener('deviceorientationabsolute', onDeviceOrientation, true);
+
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen').catch(() => {});
+      }
+
+      // Verificar tras 1 segundo si el navegador bloquea eventos por abrir desde archivo local
+      setTimeout(() => {
+        if (state.totalPackets === 0) {
+          activateBlockedFileFallback();
+        }
+      }, 1000);
+    }
+
+    function activateBlockedFileFallback() {
+      state.isBlockedFallback = true;
+      const pill = document.getElementById('statusPill');
+      pill.classList.add('blocked');
+      document.getElementById('statusDot').classList.remove('blinking');
+
+      const inIframe = window.self !== window.top;
+      const isLocalFile = location.protocol === 'file:' || location.protocol === 'content:' || !window.isSecureContext;
+      const diagEl = document.getElementById('diagExactCause');
+
+      if (inIframe) {
+        document.getElementById('statusText').textContent = '🟠 VISTA PREVIA (USAR −/+)';
+        if (diagEl) diagEl.textContent = 'Causa detectada: Estás dentro del recuadro de vista previa de Gemini, que bloquea el acelerómetro del móvil.';
+      } else if (isLocalFile) {
+        document.getElementById('statusText').textContent = '🟠 ARCHIVO LOCAL (USAR −/+)';
+        if (diagEl) diagEl.textContent = 'Causa detectada: Has abierto el archivo desde Descargas (' + location.protocol + '). Chrome bloquea sensores si no es https://.';
+      } else {
+        document.getElementById('statusText').textContent = '🟠 SENSORES DESACTIVADOS';
+        if (diagEl) diagEl.textContent = 'Causa detectada: Revisa en Chrome → Configuración de sitios → Sensores de movimiento.';
+      }
+
+      document.getElementById('fallbackStrip').classList.add('visible');
+    }
+
+    function nudgeAngle(axis, delta) {
+      if (axis === 'pitch') {
+        state.smoothPitch = Math.max(-8.0, Math.min(8.0, Math.round((state.smoothPitch + delta) * 10) / 10));
+      } else {
+        state.smoothRoll = Math.max(-8.0, Math.min(8.0, Math.round((state.smoothRoll + delta) * 10) / 10));
+      }
+      renderScreen();
+    }
+
+    // Reloj de hercios (Hz) en esquina superior derecha
+    setInterval(() => {
+      if (!state.isBlockedFallback && state.totalPackets > 0) {
+        const hz = state.packetsThisSec;
+        state.packetsThisSec = 0;
+        document.getElementById('statusText').textContent = `🟢 EN VIVO · ${hz} Hz`;
+      }
+    }, 1000);
+
+    /* ==========================================================================
+       RENDERIZADO DE LA PANTALLA (DIANA 2D + 4 RUEDAS + RESUMEN 1 LÍNEA)
+       ========================================================================== */
+    function renderScreen() {
+      const pitchDeg = state.smoothPitch - (state.hasTare ? state.tarePitch : 0);
+      const rollDeg  = state.smoothRoll  - (state.hasTare ? state.tareRoll  : 0);
+
+      const pitchRad = (pitchDeg * Math.PI) / 180;
+      const rollRad  = (rollDeg  * Math.PI) / 180;
+
+      // Desplazamiento vertical de cada eje respecto al centro geométrico de la Ducato L3H2
+      const dy = (WHEELBASE_CM / 2) * Math.tan(pitchRad);
+      const dx = (TRACK_CM / 2)     * Math.tan(rollRad);
+
+      // Altura Z actual de cada rueda respecto al plano central
+      // pitchDeg > 0 = Morro alto; rollDeg > 0 = Inclinada hacia la derecha (Copiloto bajo)
+      const zWheel = {
+        FL: +dy + dx, // Delantera Izquierda
+        FR: +dy - dx, // Delantera Derecha
+        RL: -dy + dx, // Trasera Izquierda
+        RR: -dy - dx  // Trasera Derecha
+      };
+
+      const maxZ = Math.max(zWheel.FL, zWheel.FR, zWheel.RL, zWheel.RR);
+
+      // 1. Mover la burbuja 2D
+      const maxTilt = 4.0;
+      const maxPx = 36;
+      const bx = Math.max(-maxPx, Math.min(maxPx, (-rollDeg / maxTilt) * maxPx));
+      const by = Math.max(-maxPx, Math.min(maxPx, (-pitchDeg / maxTilt) * maxPx));
+      const bubble = document.getElementById('bubbleDot');
+      bubble.style.transform = `translate(${bx}px, ${by}px)`;
+
+      const totalTilt = Math.hypot(pitchDeg, rollDeg);
+      if (totalTilt <= 0.4) {
+        bubble.style.background = 'radial-gradient(circle at 30% 30%, #6ee7b7, #10b981)';
+      } else if (totalTilt <= 2.2) {
+        bubble.style.background = 'radial-gradient(circle at 30% 30%, #fde68a, #f59e0b)';
+      } else {
+        bubble.style.background = 'radial-gradient(circle at 30% 30%, #fca5a5, #ef4444)';
+      }
+
+      // 2. Actualizar textos de Cabeceo y Alabeo
+      const pitchValEl = document.getElementById('pitchDegVal');
+      const pitchDirEl = document.getElementById('pitchDirLbl');
+      pitchValEl.textContent = `${ (pitchDeg > 0.05 ? '+' : '') + fmtNum(pitchDeg) }°`;
+      if (Math.abs(pitchDeg) < 0.3) {
+        pitchValEl.style.color = 'var(--c-green)';
+        pitchDirEl.textContent = 'A nivel longitudinal ✓';
+      } else if (pitchDeg < 0) {
+        pitchValEl.style.color = 'var(--c-amber)';
+        pitchDirEl.textContent = 'Morro bajo (Subir delante)';
+      } else {
+        pitchValEl.style.color = 'var(--c-amber)';
+        pitchDirEl.textContent = 'Trasera baja (Subir detrás)';
+      }
+
+      const rollValEl = document.getElementById('rollDegVal');
+      const rollDirEl = document.getElementById('rollDirLbl');
+      rollValEl.textContent = `${ (rollDeg > 0.05 ? '+' : '') + fmtNum(rollDeg) }°`;
+      if (Math.abs(rollDeg) < 0.3) {
+        rollValEl.style.color = 'var(--c-green)';
+        rollDirEl.textContent = 'A nivel transversal ✓';
+      } else if (rollDeg > 0) {
+        rollValEl.style.color = 'var(--c-amber)';
+        rollDirEl.textContent = 'Caída a Derecha (Copiloto)';
+      } else {
+        rollValEl.style.color = 'var(--c-amber)';
+        rollDirEl.textContent = 'Caída a Izquierda (Piloto)';
+      }
+
+      // 3. Actualizar las 4 ruedas
+      const shortNames = {
+        FL: 'Del. Izquierda',
+        FR: 'Del. Derecha',
+        RL: 'Tras. Izquierda',
+        RR: 'Tras. Derecha'
+      };
+
+      const wheelsSummary = [];
+
+      ['FL', 'FR', 'RL', 'RR'].forEach((id) => {
+        const liftCm = Math.max(0, maxZ - zWheel[id]); // Altura a subir con calzo respecto a la rueda más alta
+        const centerDelta = -zWheel[id];               // Cota respecto al plano central (+ subir / - bajar)
+        const step = evaluateFiammaStep(liftCm);
+
+        wheelsSummary.push({ id, name: shortNames[id], liftCm, step });
+
+        const cardEl = document.getElementById(`card-${id}`);
+        const liftEl = document.getElementById(`lift-${id}`);
+        const stepEl = document.getElementById(`step-${id}`);
+        const barsEl = document.getElementById(`bars-${id}`).children;
+        const centerEl = document.getElementById(`center-${id}`);
+
+        cardEl.className = `wheel-card ${step.borderClass}`;
+        liftEl.textContent = `+${fmtNum(liftCm)} cm`;
+        liftEl.style.color = step.colorHex;
+
+        stepEl.className = `step-pill ${step.pillClass}`;
+        stepEl.textContent = step.text;
+
+        for (let i = 0; i < 4; i++) {
+          barsEl[i].className = `f-bar b${i + 1}`;
+          if (step.barIdx === i + 1) {
+            barsEl[i].classList.add(`active-${i + 1}`);
+          }
+        }
+
+        if (Math.abs(centerDelta) < 0.25) {
+          centerEl.textContent = '0,0 cm';
+          centerEl.style.color = 'var(--c-green)';
+        } else if (centerDelta > 0) {
+          centerEl.textContent = `▲ SUBIR +${fmtNum(centerDelta)} cm`;
+          centerEl.style.color = 'var(--c-blue)';
+        } else {
+          centerEl.textContent = `▼ BAJAR -${fmtNum(Math.abs(centerDelta))} cm`;
+          centerEl.style.color = 'var(--c-orange)';
+        }
+      });
+
+      // 4. Franja resumen de 1 línea para los 2 calzos Fiamma
+      wheelsSummary.sort((a, b) => b.liftCm - a.liftCm);
+      const needChock = wheelsSummary.filter((w) => w.step.barIdx > 0);
+      const summaryEl = document.getElementById('summaryLine');
+
+      if (needChock.length === 0) {
+        summaryEl.textContent = '✅ Furgoneta a nivel · Ninguna rueda necesita calzo';
+        summaryEl.style.borderColor = 'rgba(16, 185, 129, 0.45)';
+        summaryEl.style.color = '#6ee7b7';
+      } else if (needChock.length === 1) {
+        const w1 = needChock[0];
+        summaryEl.textContent = `Calzo 1: ${w1.name} → ${w1.step.shortText} · Resto en suelo`;
+        summaryEl.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+        summaryEl.style.color = '#f8fafc';
+      } else {
+        const w1 = needChock[0];
+        const w2 = needChock[1];
+        summaryEl.textContent = `Calzo 1: ${w1.name} → ${w1.step.shortText} · Calzo 2: ${w2.name} → ${w2.step.shortText}`;
+        summaryEl.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+        summaryEl.style.color = '#fde68a';
+      }
+    }
+
+    /* ==========================================================================
+       INTERACCIÓN TÁCTIL SOBRE LA DIANA CENTRAL (SIEMPRE DISPONIBLE COMO SIMULADOR)
+       ========================================================================== */
+    const bullseyePad = document.getElementById('bullseyePad');
+    let isDraggingPad = false;
+
+    function updateFromPadTouch(clientX, clientY) {
+      const rect = bullseyePad.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const maxR = rect.width / 2;
+      const dx = Math.max(-maxR, Math.min(maxR, clientX - cx));
+      const dy = Math.max(-maxR, Math.min(maxR, clientY - cy));
+
+      // Mapeo inverso: arrastrar la burbuja hasta el borde simula ±4,0°
+      state.smoothRoll  = (-dx / maxR) * 4.0 + (state.hasTare ? state.tareRoll : 0);
+      state.smoothPitch = (-dy / maxR) * 4.0 + (state.hasTare ? state.tarePitch : 0);
+      renderScreen();
+    }
+
+    bullseyePad.addEventListener('pointerdown', (e) => {
+      isDraggingPad = true;
+      bullseyePad.setPointerCapture(e.pointerId);
+      updateFromPadTouch(e.clientX, e.clientY);
+    });
+
+    bullseyePad.addEventListener('pointermove', (e) => {
+      if (!isDraggingPad) return;
+      updateFromPadTouch(e.clientX, e.clientY);
+    });
+
+    bullseyePad.addEventListener('pointerup', () => {
+      isDraggingPad = false;
+    });
+
+    /* ==========================================================================
+       LOS 3 BOTONES INFERIORES + MODAL DE AYUDA DE 1 TOQUE
+       ========================================================================== */
+    function syncButtonsUI() {
+      const btnTare = document.getElementById('btnTare');
+      const lblTare = document.getElementById('btnTareLabel');
+      if (state.hasTare) {
+        btnTare.classList.add('active-tare');
+        lblTare.textContent = '↺ BORRAR TARA';
+      } else {
+        btnTare.classList.remove('active-tare');
+        lblTare.textContent = '🎯 TARAR CERO COCINA';
+      }
+
+      document.getElementById('btnOrientLabel').textContent = ORIENTATIONS[state.orientIdx].label;
+    }
+
+    // Botón 1: Tarar Cero Cocina / Borrar Tara
+    document.getElementById('btnTare').addEventListener('click', () => {
+      if (state.hasTare) {
+        state.hasTare = false;
+        state.tarePitch = 0.0;
+        state.tareRoll = 0.0;
+        localStorage.removeItem('p6a_ducato_has_tare');
+        localStorage.removeItem('p6a_ducato_tare_p');
+        localStorage.removeItem('p6a_ducato_tare_r');
+      } else {
+        state.hasTare = true;
+        state.tarePitch = state.smoothPitch;
+        state.tareRoll = state.smoothRoll;
+        localStorage.setItem('p6a_ducato_has_tare', '1');
+        localStorage.setItem('p6a_ducato_tare_p', String(state.tarePitch));
+        localStorage.setItem('p6a_ducato_tare_r', String(state.tareRoll));
+      }
+      syncButtonsUI();
+      renderScreen();
+    });
+
+    // Botón 2: Rotar Orientación del Pixel 6a sobre la encimera
+    document.getElementById('btnOrient').addEventListener('click', () => {
+      state.orientIdx = (state.orientIdx + 1) % ORIENTATIONS.length;
+      localStorage.setItem('p6a_ducato_orient_idx', String(state.orientIdx));
+      const mapped = mapPhoneToVan(state.rawBeta, state.rawGamma);
+      state.smoothPitch = mapped.pitch;
+      state.smoothRoll = mapped.roll;
+      syncButtonsUI();
+      renderScreen();
+    });
+
+    // Botón 3: Pitido guía al subir a los calzos
+    function scheduleBeep() {
+      if (!state.audioOn || !state.audioCtx) return;
+      const pitchDeg = state.smoothPitch - (state.hasTare ? state.tarePitch : 0);
+      const rollDeg  = state.smoothRoll  - (state.hasTare ? state.tareRoll  : 0);
+      const tilt = Math.hypot(pitchDeg, rollDeg);
+
+      const now = state.audioCtx.currentTime;
+      const osc = state.audioCtx.createOscillator();
+      const gain = state.audioCtx.createGain();
+
+      if (tilt <= 0.4) {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(state.audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+        state.beepTimer = setTimeout(scheduleBeep, 900);
+      } else {
+        const freq = Math.min(760, Math.max(320, 740 - tilt * 80));
+        const waitMs = Math.min(750, Math.max(140, tilt * 165));
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+        osc.connect(gain);
+        gain.connect(state.audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.08);
+        state.beepTimer = setTimeout(scheduleBeep, waitMs);
+      }
+    }
+
+    document.getElementById('btnBeep').addEventListener('click', () => {
+      state.audioOn = !state.audioOn;
+      const btn = document.getElementById('btnBeep');
+      const lbl = document.getElementById('btnBeepLabel');
+      if (state.audioOn) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!state.audioCtx && AudioCtx) state.audioCtx = new AudioCtx();
+        if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
+        btn.classList.add('active-audio');
+        lbl.textContent = '🔊 PITIDO: ON';
+        scheduleBeep();
+      } else {
+        btn.classList.remove('active-audio');
+        lbl.textContent = '🔊 PITIDO: OFF';
+        if (state.beepTimer) clearTimeout(state.beepTimer);
+      }
+    });
+
+    // Modal de ayuda de 1 toque
+    function openHelpModal() {
+      document.getElementById('helpModal').classList.add('open');
+    }
+    function closeHelpModal() {
+      document.getElementById('helpModal').classList.remove('open');
+    }
+
+    document.getElementById('btnOpenHelp').addEventListener('click', openHelpModal);
+    document.getElementById('statusPill').addEventListener('click', openHelpModal);
+    document.getElementById('btnCloseHelp').addEventListener('click', closeHelpModal);
+    document.getElementById('btnOkHelp').addEventListener('click', closeHelpModal);
+    document.getElementById('btnRetrySensors').addEventListener('click', () => {
+      closeHelpModal();
+      startPixelSensors();
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      syncButtonsUI();
+      renderScreen();
+      startPixelSensors();
+    });
+  </script>
+</body>
+</html>
