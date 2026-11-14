@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="application-name" content="Nivel Ducato" />
+  <title>DUCATO L3 MAXI 2019 · FIAMMA 4/8/12 cm</title>
+
+  <!-- Icono vectorial embebido para acceso directo en Android (Pixel Launcher) -->
+  <link id="appIcon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='120' fill='%23000000'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%23090d16' stroke='%2338bdf8' stroke-width='20'/%3E%3Cline x1='56' y1='256' x2='456' y2='256' stroke='%231e293b' stroke-width='10'/%3E%3Cline x1='256' y1='56' x2='256' y2='456' stroke='%231e293b' stroke-width='10'/%3E%3Ccircle cx='256' cy='256' r='56' fill='%2310b981'/%3E%3C/svg%3E" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <style>
+    :root {
+      --oled-bg: #000000;
+      --card-bg: #090d16;
+      --card-border: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --c-green: #10b981;
+      --c-blue: #38bdf8;
+      --c-amber: #f59e0b;
+      --c-orange: #f97316;
+      --c-red: #ef4444;
+      --c-cyan: #22d3ee;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      overflow: hidden;
+      background-color: var(--oled-bg);
+      color: var(--text-main);
+      font-family: "Inter", system-ui, -apple-system, Roboto, sans-serif;
+      touch-action: manipulation;
+    }
+
+    /* Estructura fija de 1 sola pantalla para Google Pixel 6a (412x915 px) */
+    .pixel-screen {
+      width: 100%;
+      max-width: 460px;
+      height: 100dvh;
+      margin: 0 auto;
+      padding: 8px 10px 10px 10px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto auto;
+      gap: 7px;
+      background-color: #000000;
+    }
+
+    /* 1. Cabecera superior */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 7px 10px;
+    }
+
+    .app-title-wrap {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .app-title {
+      font-size: 0.74rem;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      color: #ffffff;
+      white-space: nowrap;
+    }
+
+    .app-subtitle {
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.02em;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.66rem;
+      font-weight: 800;
+      padding: 5px 9px;
+      border-radius: 999px;
+      cursor: pointer;
+      white-space: nowrap;
+      border: 1px solid rgba(16, 185, 129, 0.45);
+      background: rgba(16, 185, 129, 0.14);
+      color: #34d399;
+      transition: transform 0.1s ease, border-color 0.2s ease;
+    }
+
+    .status-pill:active {
+      transform: scale(0.95);
+    }
+
+    .status-pill.frozen {
+      border-color: rgba(34, 211, 238, 0.6);
+      background: rgba(34, 211, 238, 0.16);
+      color: #67e8f9;
+    }
+
+    .pulse-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: currentColor;
+    }
+
+    .pulse-dot.blinking {
+      animation: pulseBlink 1.4s infinite ease-in-out;
+    }
+
+    @keyframes pulseBlink {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.82); }
+    }
+
+    /* 2. Centro Visual: Diana 2D + Grados Cabeceo y Alabeo */
+    .visual-center {
+      display: grid;
+      grid-template-columns: 110px 1fr;
+      gap: 8px;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 8px 10px;
+    }
+
+    .bullseye {
+      position: relative;
+      width: 102px;
+      height: 102px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #111827 0%, #030712 80%);
+      border: 2px solid #334155;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto;
+      touch-action: none;
+      overflow: hidden;
+    }
+
+    .bullseye-cross-h {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: rgba(148, 163, 184, 0.22);
+    }
+
+    .bullseye-cross-v {
+      position: absolute;
+      width: 1px;
+      height: 100%;
+      background: rgba(148, 163, 184, 0.22);
+    }
+
+    .bullseye-ring-outer {
+      position: absolute;
+      width: 66px;
+      height: 66px;
+      border-radius: 50%;
+      border: 1px dashed rgba(148, 163, 184, 0.35);
+    }
+
+    .bullseye-ring-ok {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--c-green);
+    }
+
+    .bubble {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #6ee7b7, #10b981);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.8);
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .angles-col {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .angle-box {
+      background: #000000;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 5px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .angle-meta {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .angle-title {
+      font-size: 0.62rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 0.03em;
+    }
+
+    .angle-sub {
+      font-size: 0.66rem;
+      font-weight: 700;
+      color: #cbd5e1;
+    }
+
+    .angle-deg {
+      font-size: 1.25rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .step-adj-group {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .adj-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: #111827;
+      border: 1px solid #334155;
+      color: #f8fafc;
+      font-size: 0.95rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .adj-btn:active {
+      background: #1e293b;
+      border-color: #38bdf8;
+      transform: scale(0.94);
+    }
+
+    /* 3. Cuadrícula 2x2 de las 4 Ruedas */
+    .wheels-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 7px;
+      min-height: 0;
+    }
+
+    .wheel-card {
+      background: var(--card-bg);
+      border: 1.5px solid var(--card-border);
+      border-radius: 13px;
+      padding: 7px 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 0;
+    }
+
+    .wheel-card.step-0-border { border-color: rgba(16, 185, 129, 0.5); }
+    .wheel-card.step-1-border { border-color: rgba(56, 189, 248, 0.75); }
+    .wheel-card.step-2-border { border-color: rgba(245, 158, 11, 0.8); }
+    .wheel-card.step-3-border { border-color: rgba(249, 115, 22, 0.85); }
+    .wheel-card.step-4-border { border-color: rgba(239, 68, 68, 0.95); background: rgba(239, 68, 68, 0.07); }
+
+    .wheel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .wheel-name {
+      font-size: 0.69rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+    }
+
+    .wheel-side {
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .wheel-main-readout {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin: 1px 0;
+    }
+
+    .wheel-cm {
+      font-size: 1.45rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.05;
+    }
+
+    .wheel-cm-hint {
+      font-size: 0.57rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .step-pill {
+      width: 100%;
+      text-align: center;
+      font-size: 0.67rem;
+      font-weight: 900;
+      padding: 3px 4px;
+      border-radius: 6px;
+      letter-spacing: 0.01em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pill-green  { background: rgba(16, 185, 129, 0.18); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.4); }
+    .pill-blue   { background: rgba(56, 189, 248, 0.2);  color: #7dd3fc; border: 1px solid rgba(56, 189, 248, 0.45); }
+    .pill-amber  { background: rgba(245, 158, 11, 0.22); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.5); }
+    .pill-orange { background: rgba(249, 115, 22, 0.24); color: #fdba74; border: 1px solid rgba(249, 115, 22, 0.55); }
+    .pill-red    { background: rgba(239, 68, 68, 0.28);  color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.65); }
+
+    /* Gráfico de 4 barras Fiamma: 4cm, 8cm, 12cm y Tope 16cm */
+    .fiamma-bars {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 0.85fr;
+      gap: 4px;
+      align-items: end;
+      height: 21px;
+      margin: 2px 0;
+    }
+
+    .f-bar {
+      background: #111827;
+      border: 1px solid #1e293b;
+      border-radius: 3px 3px 1px 1px;
+      font-size: 0.54rem;
+      font-weight: 800;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    .f-bar.b1 { height: 48%; }
+    .f-bar.b2 { height: 68%; }
+    .f-bar.b3 { height: 86%; }
+    .f-bar.b4 {
+      height: 100%;
+      border-color: rgba(239, 68, 68, 0.35);
+      color: #991b1b;
+    }
+
+    .f-bar.active-1 { background: var(--c-blue);   border-color: #bae6fd; color: #000; }
+    .f-bar.active-2 { background: var(--c-amber);  border-color: #fde68a; color: #000; }
+    .f-bar.active-3 { background: var(--c-orange); border-color: #fed7aa; color: #000; }
+    .f-bar.active-4 { background: var(--c-red);    border-color: #fecaca; color: #fff; }
+
+    /* Cota respecto al plano central */
+    .center-plane-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #141c2b;
+      padding-top: 3px;
+      font-size: 0.62rem;
+      font-weight: 800;
+    }
+
+    .center-plane-lbl {
+      color: #64748b;
+    }
+
+    .center-plane-val {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* 4. Franja resumen de 1 línea debajo de las ruedas */
+    .summary-strip {
+      background: #070b14;
+      border: 1px solid #1e293b;
+      border-radius: 10px;
+      padding: 6px 9px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #e2e8f0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      text-align: center;
+    }
+
+    /* 5. Barra inferior con 4 botones táctiles (Tarar, Congelar, Orientación, Pitido) */
+    .bottom-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    .tactile-btn {
+      background: #0d1322;
+      border: 1.5px solid #26354d;
+      border-radius: 11px;
+      padding: 8px 3px;
+      color: #f8fafc;
+      font-size: 0.62rem;
+      font-weight: 900;
+      text-align: center;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 2px;
+      min-height: 46px;
+      transition: transform 0.1s ease, border-color 0.15s ease;
+    }
+
+    .tactile-btn:active {
+      transform: scale(0.95);
+    }
+
+    .tactile-btn.active-tare {
+      border-color: var(--c-amber);
+      background: rgba(245, 158, 11, 0.15);
+      color: #fcd34d;
+    }
+
+    .tactile-btn.active-freeze {
+      border-color: var(--c-cyan);
+      background: rgba(34, 211, 238, 0.16);
+      color: #67e8f9;
+    }
+
+    .tactile-btn.active-audio {
+      border-color: var(--c-green);
+      background: rgba(16, 185, 129, 0.16);
+      color: #6ee7b7;
+    }
+
+    /* Modal Técnico de Parámetros de Chasis y Filtro Antitemblor */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 50;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-card {
+      background: #090d16;
+      border: 1.5px solid #334155;
+      border-radius: 16px;
+      padding: 15px;
+      max-width: 400px;
+      width: 100%;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.72rem;
+    }
+
+    .spec-table td {
+      padding: 5px 4px;
+      border-bottom: 1px solid #162032;
+    }
+
+    .spec-input {
+      width: 74px;
+      background: #000000;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      padding: 3px 6px;
+      color: #38bdf8;
+      font-weight: 800;
+      font-size: 0.75rem;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .damping-btn {
+      flex: 1;
+      padding: 6px 4px;
+      font-size: 0.66rem;
+      font-weight: 800;
+      border-radius: 8px;
+      border: 1px solid #26354d;
+      background: #0d1322;
+      color: #94a3b8;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .damping-btn.active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.16);
+      color: #34d399;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="pixel-screen">
+    <!-- 1. CABECERA COMPACTA CON ACCESO A FICHA TÉCNICA DE PARÁMETROS -->
+    <header class="top-bar">
+      <div class="app-title-wrap">
+        <div class="app-title">DUCATO L3 MAXI (2019)</div>
+        <div id="subSpecsHeader" class="app-subtitle">Batalla 4035 · Vías 1810/1790 mm</div>
+      </div>
+      <button id="statusPill" type="button" class="status-pill" title="Ver parámetros de chasis y filtro">
+        <span id="statusDot" class="pulse-dot blinking"></span>
+        <span id="statusText">🟢 EN VIVO · PARÁMETROS</span>
+      </button>
+    </header>
+
+    <!-- 2. CENTRO VISUAL: NIVEL DE BURBUJA 2D + CABECEO Y ALABEO ESTABILIZADOS -->
+    <section class="visual-center">
+      <div id="bullseyePad" class="bullseye" aria-label="Nivel de burbuja 2D interactivo">
+        <div class="bullseye-cross-h"></div>
+        <div class="bullseye-cross-v"></div>
+        <div class="bullseye-ring-outer"></div>
+        <div class="bullseye-ring-ok"></div>
+        <div id="bubbleDot" class="bubble"></div>
+      </div>
+
+      <div class="angles-col">
+        <div class="angle-box">
+          <div class="angle-meta">
+            <span class="angle-title">Cabeceo (Largo 403,5 cm)</span>
+            <span id="pitchDirLbl" class="angle-sub">A nivel longitudinal ✓</span>
+          </div>
+          <div class="step-adj-group">
+            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', -0.1)" aria-label="Bajar cabeceo">−</button>
+            <span id="pitchDegVal" class="angle-deg" style="color: var(--c-green); min-width: 46px; text-align: right;">0,0°</span>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', 0.1)" aria-label="Subir cabeceo">+</button>
+          </div>
+        </div>
+
+        <div class="angle-box">
+          <div class="angle-meta">
+            <span class="angle-title">Alabeo (Ancho 181/179 cm)</span>
+            <span id="rollDirLbl" class="angle-sub">A nivel transversal ✓</span>
+          </div>
+          <div class="step-adj-group">
+            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', -0.1)" aria-label="Inclinar izquierda">−</button>
+            <span id="rollDegVal" class="angle-deg" style="color: var(--c-green); min-width: 46px; text-align: right;">0,0°</span>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', 0.1)" aria-label="Inclinar derecha">+</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. CUADRÍCULA 2x2 DE LAS 4 RUEDAS (VÍA DEL. 1810 mm / VÍA TRAS. 1790 mm) -->
+    <section class="wheels-grid">
+      <!-- DEL. IZQUIERDA (FL) -->
+      <article id="card-FL" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">DEL. IZQUIERDA</span>
+          <span class="wheel-side">Piloto · Vía 181</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-FL" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-FL" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-FL" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-FL" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+
+      <!-- DEL. DERECHA (FR) -->
+      <article id="card-FR" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">DEL. DERECHA</span>
+          <span class="wheel-side">Copiloto · Vía 181</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-FR" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-FR" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-FR" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-FR" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+
+      <!-- TRAS. IZQUIERDA (RL) -->
+      <article id="card-RL" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">TRAS. IZQUIERDA</span>
+          <span class="wheel-side">Piloto · Vía 179</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-RL" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-RL" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-RL" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-RL" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+
+      <!-- TRAS. DERECHA (RR) -->
+      <article id="card-RR" class="wheel-card step-0-border">
+        <div class="wheel-head">
+          <span class="wheel-name">TRAS. DERECHA</span>
+          <span class="wheel-side">Corredera · Vía 179</span>
+        </div>
+        <div class="wheel-main-readout">
+          <span id="lift-RR" class="wheel-cm" style="color: var(--c-green);">+0,0 cm</span>
+          <span class="wheel-cm-hint">Calzo</span>
+        </div>
+        <div id="step-RR" class="step-pill pill-green">SUELO (0 cm)</div>
+        <div id="bars-RR" class="fiamma-bars">
+          <div class="f-bar b1">4</div>
+          <div class="f-bar b2">8</div>
+          <div class="f-bar b3">12</div>
+          <div class="f-bar b4">16</div>
+        </div>
+        <div class="center-plane-row">
+          <span class="center-plane-lbl">Plano central:</span>
+          <span id="center-RR" class="center-plane-val" style="color: var(--c-green);">0,0 cm</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- 4. FRANJA RESUMEN DE 1 LÍNEA DEBAJO DE LAS RUEDAS -->
+    <div id="summaryLine" class="summary-strip">
+      ✅ Furgoneta a nivel · Ninguna rueda necesita calzo
+    </div>
+
+    <!-- 5. BARRA INFERIOR CON 4 BOTONES GRANDES TÁCTILES -->
+    <footer class="bottom-bar">
+      <button id="btnTare" type="button" class="tactile-btn">
+        <span id="btnTareLabel">🎯 TARAR CERO</span>
+      </button>
+
+      <button id="btnFreeze" type="button" class="tactile-btn">
+        <span id="btnFreezeLabel">❄️ CONGELAR</span>
+      </button>
+
+      <button id="btnOrient" type="button" class="tactile-btn">
+        <span id="btnOrientLabel">⬆️ CABINA</span>
+      </button>
+
+      <button id="btnBeep" type="button" class="tactile-btn">
+        <span id="btnBeepLabel">🔊 PITIDO: OFF</span>
+      </button>
+    </footer>
+  </main>
+
+  <!-- MODAL TÉCNICO: PARÁMETROS USADOS (DUCATO MAXI L3 2019 + AMORTIGUACIÓN) -->
+  <div id="specsModal" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-card space-y-3">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+        <div>
+          <h2 class="text-sm font-black text-white">📐 Parámetros de Cálculo y Chasis</h2>
+          <p class="text-[11px] text-sky-400 font-bold">Fiat Ducato Maxi L3H2 (Año 2019 · Chasis X290)</p>
+        </div>
+        <button id="btnCloseSpecs" type="button" class="text-slate-400 font-bold text-base px-2">✕</button>
+      </div>
+
+      <!-- Tabla de Geometría por Eje -->
+      <table class="spec-table text-slate-300">
+        <tbody>
+          <tr>
+            <td>
+              <strong class="text-white">Largo entre ejes (Batalla L3)</strong><br/>
+              <span class="text-[10px] text-slate-400">Semieje longitudinal: <span id="lblHalfWheelbase">201,75 cm</span></span>
+            </td>
+            <td class="text-right">
+              <input id="inpWheelbaseMm" type="number" class="spec-input" value="4035" min="2500" max="5000" step="5" />
+              <span class="text-[11px] text-slate-400 font-bold">mm</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="text-white">Ancho vía delantera (Eje Del.)</strong><br/>
+              <span class="text-[10px] text-slate-400">Semivía delantera: <span id="lblHalfFrontTrack">90,50 cm</span></span>
+            </td>
+            <td class="text-right">
+              <input id="inpFrontTrackMm" type="number" class="spec-input" value="1810" min="1400" max="2200" step="5" />
+              <span class="text-[11px] text-slate-400 font-bold">mm</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="text-white">Ancho vía trasera (Eje Tras.)</strong><br/>
+              <span class="text-[10px] text-slate-400">Semivía trasera: <span id="lblHalfRearTrack">89,50 cm</span></span>
+            </td>
+            <td class="text-right">
+              <input id="inpRearTrackMm" type="number" class="spec-input" value="1790" min="1400" max="2200" step="5" />
+              <span class="text-[11px] text-slate-400 font-bold">mm</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="text-white">Calzos Fiamma Level Up Prem. S</strong><br/>
+              <span class="text-[10px] text-slate-400">Cota 68 × 26/28 cm (Cubierta 225/75 R16C)</span>
+            </td>
+            <td class="text-right font-extrabold text-amber-400">
+              4 / 8 / 12 cm<br/>
+              <span class="text-[10px] text-red-400">Tope: 16 cm</span>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <strong class="text-white">Fórmula Trigonométrica 3D</strong><br/>
+              <span class="text-[10px] text-slate-400">Fuente activa: <span id="lblActiveSensorSource" class="text-emerald-400 font-bold">Fusión Giroscopio</span></span>
+            </td>
+            <td class="text-right font-mono text-[11px] text-sky-300">
+              Δh = d · tan(θ)
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Selector de Amortiguación (Filtro Antitemblor) -->
+      <div class="space-y-1.5 pt-1">
+        <div class="flex items-center justify-between text-[11px]">
+          <span class="font-extrabold text-slate-300 uppercase">Filtro Antitemblor (Amortiguación)</span>
+          <span id="lblDampingDesc" class="text-emerald-400 font-bold">Media móvil 20 + Histéresis</span>
+        </div>
+        <div class="flex gap-1.5">
+          <button type="button" id="damp-MAX" class="damping-btn active" onclick="setDampingMode('MAX')">
+            Máxima Estabilidad
+          </button>
+          <button type="button" id="damp-MED" class="damping-btn" onclick="setDampingMode('MED')">
+            Media
+          </button>
+          <button type="button" id="damp-FAST" class="damping-btn" onclick="setDampingMode('FAST')">
+            Rápida
+          </button>
+        </div>
+      </div>
+
+      <!-- Botones de acción del modal -->
+      <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800">
+        <button id="btnResetFactory" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-[11px] font-bold">
+          ↺ Cotas Ducato 2019
+        </button>
+        <div class="flex gap-2">
+          <button id="btnDownloadIndex" type="button" class="px-2.5 py-1.5 rounded-lg bg-sky-600 text-white text-[11px] font-extrabold">
+            ⬇️ Bajar index.html
+          </button>
+          <button id="btnSaveSpecs" type="button" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-black text-[11px] font-black">
+            Guardar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ==========================================================================
+       1. PARÁMETROS GEOMÉTRICOS POR EJE: FIAT DUCATO MAXI L3 (2019 · CHASIS X290)
+       - Batalla L3: 4035 mm (403,5 cm -> semieje longitudinal d_y = 201,75 cm)
+       - Vía Delantera: 1810 mm (181,0 cm -> semivía delantera d_x_front = 90,50 cm)
+       - Vía Trasera: 1790 mm (179,0 cm -> semivía trasera d_x_rear = 89,50 cm)
+       ========================================================================== */
+    const DEFAULT_SPECS = {
+      wheelbaseMm: 4035,
+      frontTrackMm: 1810,
+      rearTrackMm: 1790
+    };
+
+    const DAMPING_PRESETS = {
+      MAX: {
+        windowSize: 20,
+        emaAlpha: 0.04,
+        angleDeadband: 0.05,
+        cmDeadband: 0.15,
+        textRefreshMs: 350,
+        desc: 'Media móvil 20 + Histéresis 1,5 mm'
+      },
+      MED: {
+        windowSize: 12,
+        emaAlpha: 0.09,
+        angleDeadband: 0.03,
+        cmDeadband: 0.10,
+        textRefreshMs: 250,
+        desc: 'Media móvil 12 + Histéresis 1,0 mm'
+      },
+      FAST: {
+        windowSize: 5,
+        emaAlpha: 0.22,
+        angleDeadband: 0.01,
+        cmDeadband: 0.03,
+        textRefreshMs: 120,
+        desc: 'Respuesta directa sin retardo'
+      }
+    };
+
+    const ORIENTATIONS = [
+      { id: 'FRONT', label: '⬆️ CABINA' },
+      { id: 'LEFT',  label: '⬅️ PASILLO' },
+      { id: 'REAR',  label: '⬇️ TRASERAS' },
+      { id: 'RIGHT', label: '➡️ CORREDERA' }
+    ];
+
+    const state = {
+      // Geometría activa en milímetros
+      wheelbaseMm: parseInt(localStorage.getItem('ducato19_wb_mm') || '4035', 10),
+      frontTrackMm: parseInt(localStorage.getItem('ducato19_ft_mm') || '1810', 10),
+      rearTrackMm: parseInt(localStorage.getItem('ducato19_rt_mm') || '1790', 10),
+
+      // Configuración de amortiguación antitemblor
+      dampingMode: localStorage.getItem('ducato19_damping') || 'MAX',
+
+      // Prioridad exclusiva de sensores (evita pelea entre deviceorientation y devicemotion)
+      orientationSensorLocked: false,
+      sensorSourceLabel: 'Esperando sensor...',
+
+      // Ventana circular de media móvil + filtro EMA
+      pitchBuffer: [],
+      rollBuffer: [],
+      emaPitch: 0.0,
+      emaRoll: 0.0,
+      hasInitialSample: false,
+
+      // Valores retenidos por histéresis (deadband) para que no tiemblen los números
+      lockedPitchDeg: 0.0,
+      lockedRollDeg: 0.0,
+      lockedLiftCm: { FL: 0.0, FR: 0.0, RL: 0.0, RR: 0.0 },
+      lockedCenterCm: { FL: 0.0, FR: 0.0, RL: 0.0, RR: 0.0 },
+      lastNumericRenderTs: 0,
+
+      // Tarado de encimera, orientación y congelación
+      hasTare: localStorage.getItem('p6a_ducato_has_tare') === '1',
+      tarePitch: parseFloat(localStorage.getItem('p6a_ducato_tare_p')) || 0.0,
+      tareRoll: parseFloat(localStorage.getItem('p6a_ducato_tare_r')) || 0.0,
+      orientIdx: parseInt(localStorage.getItem('p6a_ducato_orient_idx') || '0', 10),
+      isFrozen: false,
+
+      // Audio guía
+      audioOn: false,
+      audioCtx: null,
+      beepTimer: null
+    };
+
+    if (!DAMPING_PRESETS[state.dampingMode]) state.dampingMode = 'MAX';
+    if (isNaN(state.orientIdx) || state.orientIdx < 0 || state.orientIdx > 3) state.orientIdx = 0;
+
+    function fmtNum(n) {
+      const clean = Math.abs(n) < 0.05 ? 0 : n;
+      return clean.toFixed(1).replace('.', ',');
+    }
+
+    /* ==========================================================================
+       2. ESCALONES FIAMMA KIT LEVEL UP PREMIUM S (4 / 8 / 12 cm + TOPE 16 cm)
+       ========================================================================== */
+    function evaluateFiammaStep(cm) {
+      if (cm < 1.5) {
+        return {
+          barIdx: 0,
+          text: 'SUELO (0 cm)',
+          shortText: 'Suelo (0 cm)',
+          pillClass: 'pill-green',
+          borderClass: 'step-0-border',
+          colorHex: 'var(--c-green)'
+        };
+      }
+      if (cm < 6.0) {
+        return {
+          barIdx: 1,
+          text: 'ESCALÓN 1 (4 cm)',
+          shortText: 'Escalón 1 (4 cm)',
+          pillClass: 'pill-blue',
+          borderClass: 'step-1-border',
+          colorHex: 'var(--c-blue)'
+        };
+      }
+      if (cm < 10.0) {
+        return {
+          barIdx: 2,
+          text: 'ESCALÓN 2 (8 cm)',
+          shortText: 'Escalón 2 (8 cm)',
+          pillClass: 'pill-amber',
+          borderClass: 'step-2-border',
+          colorHex: 'var(--c-amber)'
+        };
+      }
+      if (cm <= 13.5) {
+        return {
+          barIdx: 3,
+          text: 'ESCALÓN 3 (12 cm)',
+          shortText: 'Escalón 3 (12 cm)',
+          pillClass: 'pill-orange',
+          borderClass: 'step-3-border',
+          colorHex: 'var(--c-orange)'
+        };
+      }
+      return {
+        barIdx: 4,
+        text: '⚠️ >12 cm (TOPE 16 cm)',
+        shortText: '⚠️ >12 cm (Tope 16 cm)',
+        pillClass: 'pill-red',
+        borderClass: 'step-4-border',
+        colorHex: 'var(--c-red)'
+      };
+    }
+
+    /* ==========================================================================
+       3. MAPEO DE ORIENTACIÓN DEL PIXEL 6a POSADO EN LA ENCIMERA
+       ========================================================================== */
+    function mapPhoneToVan(beta, gamma) {
+      const mode = ORIENTATIONS[state.orientIdx].id;
+      switch (mode) {
+        case 'FRONT':
+          return { pitch: beta, roll: gamma };
+        case 'LEFT':
+          return { pitch: -gamma, roll: beta };
+        case 'REAR':
+          return { pitch: -beta, roll: -gamma };
+        case 'RIGHT':
+          return { pitch: gamma, roll: -beta };
+        default:
+          return { pitch: beta, roll: gamma };
+      }
+    }
+
+    /* ==========================================================================
+       4. MOTOR ANTITEMBLOR DE 3 ETAPAS CON PRIORIDAD EXCLUSIVA DE SENSOR
+       ========================================================================== */
+    function feedSensorAngles(rawBeta, rawGamma, sourceName) {
+      if (state.isFrozen) return;
+      if (typeof rawBeta !== 'number' || typeof rawGamma !== 'number' || isNaN(rawBeta) || isNaN(rawGamma)) {
+        return;
+      }
+
+      state.sensorSourceLabel = sourceName;
+      const preset = DAMPING_PRESETS[state.dampingMode];
+      const mapped = mapPhoneToVan(rawBeta, rawGamma);
+
+      // Etapa 1A: Buffer circular de media móvil
+      state.pitchBuffer.push(mapped.pitch);
+      state.rollBuffer.push(mapped.roll);
+      while (state.pitchBuffer.length > preset.windowSize) state.pitchBuffer.shift();
+      while (state.rollBuffer.length > preset.windowSize) state.rollBuffer.shift();
+
+      let sumP = 0;
+      let sumR = 0;
+      for (let i = 0; i < state.pitchBuffer.length; i++) {
+        sumP += state.pitchBuffer[i];
+        sumR += state.rollBuffer[i];
+      }
+      const avgPitch = sumP / state.pitchBuffer.length;
+      const avgRoll  = sumR / state.rollBuffer.length;
+
+      // Etapa 1B: Filtro paso bajo exponencial (EMA)
+      if (!state.hasInitialSample) {
+        state.emaPitch = avgPitch;
+        state.emaRoll = avgRoll;
+        state.lockedPitchDeg = avgPitch;
+        state.lockedRollDeg = avgRoll;
+        state.hasInitialSample = true;
+      } else {
+        state.emaPitch += preset.emaAlpha * (avgPitch - state.emaPitch);
+        state.emaRoll  += preset.emaAlpha * (avgRoll  - state.emaRoll);
+      }
+
+      // Actualizar burbuja 2D de forma fluida en cada frame
+      const netPitchFluid = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
+      const netRollFluid  = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      renderFluidBubble(netPitchFluid, netRollFluid);
+
+      // Etapa 3: Refresco numérico pausado (cada 350 ms en modo Máxima Estabilidad)
+      const now = performance.now();
+      if (now - state.lastNumericRenderTs >= preset.textRefreshMs) {
+        state.lastNumericRenderTs = now;
+        renderStabilizedNumbers(false);
+      }
+    }
+
+    function onDeviceOrientation(event) {
+      if (event.beta === null || event.gamma === null) return;
+      // Bloquear en exclusiva el sensor de orientación fusionado de Android
+      state.orientationSensorLocked = true;
+      feedSensorAngles(event.beta, event.gamma, 'Fusión Giroscopio + Acelerómetro');
+    }
+
+    function onDeviceMotionFallback(event) {
+      // Si deviceorientation está activo, ignorar devicemotion por completo para que no compitan
+      if (state.orientationSensorLocked) return;
+
+      const acc = event.accelerationIncludingGravity;
+      if (!acc || acc.x === null || acc.y === null || acc.z === null) return;
+
+      const x = acc.x;
+      const y = acc.y;
+      const z = acc.z;
+      if (Math.hypot(x, y, z) < 1.0) return;
+
+      const zSafe = Math.abs(z) < 0.001 ? 0.001 : z;
+      const betaDeg = Math.atan2(y, zSafe) * (180 / Math.PI);
+      const gammaDeg = Math.atan2(-x, Math.hypot(y, zSafe)) * (180 / Math.PI);
+
+      feedSensorAngles(betaDeg, gammaDeg, 'Acelerómetro Gravitatorio');
+    }
+
+    function startPixelSensors() {
+      window.addEventListener('deviceorientation', onDeviceOrientation, true);
+      window.addEventListener('deviceorientationabsolute', onDeviceOrientation, true);
+      window.addEventListener('devicemotion', onDeviceMotionFallback, true);
+
+      if ('wakeLock' in navigator) {
+        navigator.wakeLock.request('screen').catch(() => {});
+      }
+    }
+
+    /* ==========================================================================
+       5. RENDERIZADO SEPARADO: BURBUJA FLUIDA (30 FPS) vs NÚMEROS ESTABLES (3 HZ)
+       ========================================================================== */
+    function renderFluidBubble(pitchDeg, rollDeg) {
+      const maxTilt = 4.0;
+      const maxPx = 35;
+      const bx = Math.max(-maxPx, Math.min(maxPx, (-rollDeg / maxTilt) * maxPx));
+      const by = Math.max(-maxPx, Math.min(maxPx, (-pitchDeg / maxTilt) * maxPx));
+      const bubble = document.getElementById('bubbleDot');
+      bubble.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px)`;
+
+      const totalTilt = Math.hypot(pitchDeg, rollDeg);
+      if (totalTilt <= 0.4) {
+        bubble.style.background = 'radial-gradient(circle at 30% 30%, #6ee7b7, #10b981)';
+      } else if (totalTilt <= 2.2) {
+        bubble.style.background = 'radial-gradient(circle at 30% 30%, #fde68a, #f59e0b)';
+      } else {
+        bubble.style.background = 'radial-gradient(circle at 30% 30%, #fca5a5, #ef4444)';
+      }
+    }
+
+    function renderStabilizedNumbers(forceImmediate) {
+      const preset = DAMPING_PRESETS[state.dampingMode];
+
+      const targetPitch = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
+      const targetRoll  = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+
+      // Etapa 2A: Histéresis (Zona muerta) en ángulos
+      if (forceImmediate || Math.abs(targetPitch - state.lockedPitchDeg) >= preset.angleDeadband) {
+        state.lockedPitchDeg = targetPitch;
+      }
+      if (forceImmediate || Math.abs(targetRoll - state.lockedRollDeg) >= preset.angleDeadband) {
+        state.lockedRollDeg = targetRoll;
+      }
+
+      const pitchDeg = state.lockedPitchDeg;
+      const rollDeg  = state.lockedRollDeg;
+
+      // Geometría exacta Fiat Ducato Maxi L3 (2019): Batalla, Vía Delantera y Vía Trasera independientes
+      const L_cm       = state.wheelbaseMm / 10;   // 403,5 cm
+      const W_front_cm = state.frontTrackMm / 10;  // 181,0 cm
+      const W_rear_cm  = state.rearTrackMm / 10;   // 179,0 cm
+
+      const pitchRad = (pitchDeg * Math.PI) / 180;
+      const rollRad  = (rollDeg  * Math.PI) / 180;
+
+      // Desplazamientos respecto al centro geométrico
+      const dy       = (L_cm / 2)       * Math.tan(pitchRad);
+      const dx_front = (W_front_cm / 2) * Math.tan(rollRad);
+      const dx_rear  = (W_rear_cm / 2)  * Math.tan(rollRad);
+
+      // Cota Z de cada rueda con su semivía real
+      const zWheel = {
+        FL: +dy + dx_front, // Delantera Izquierda (semivía 90,5 cm)
+        FR: +dy - dx_front, // Delantera Derecha   (semivía 90,5 cm)
+        RL: -dy + dx_rear,  // Trasera Izquierda   (semivía 89,5 cm)
+        RR: -dy - dx_rear   // Trasera Derecha     (semivía 89,5 cm)
+      };
+
+      const maxZ = Math.max(zWheel.FL, zWheel.FR, zWheel.RL, zWheel.RR);
+
+      // Actualizar textos de Cabeceo y Alabeo
+      const pitchValEl = document.getElementById('pitchDegVal');
+      const pitchDirEl = document.getElementById('pitchDirLbl');
+      pitchValEl.textContent = `${(pitchDeg > 0.05 ? '+' : '') + fmtNum(pitchDeg)}°`;
+      if (Math.abs(pitchDeg) < 0.3) {
+        pitchValEl.style.color = 'var(--c-green)';
+        pitchDirEl.textContent = 'A nivel longitudinal ✓';
+      } else if (pitchDeg < 0) {
+        pitchValEl.style.color = 'var(--c-amber)';
+        pitchDirEl.textContent = 'Morro bajo (Subir delante)';
+      } else {
+        pitchValEl.style.color = 'var(--c-amber)';
+        pitchDirEl.textContent = 'Trasera baja (Subir detrás)';
+      }
+
+      const rollValEl = document.getElementById('rollDegVal');
+      const rollDirEl = document.getElementById('rollDirLbl');
+      rollValEl.textContent = `${(rollDeg > 0.05 ? '+' : '') + fmtNum(rollDeg)}°`;
+      if (Math.abs(rollDeg) < 0.3) {
+        rollValEl.style.color = 'var(--c-green)';
+        rollDirEl.textContent = 'A nivel transversal ✓';
+      } else if (rollDeg > 0) {
+        rollValEl.style.color = 'var(--c-amber)';
+        rollDirEl.textContent = 'Caída a Derecha (Copiloto)';
+      } else {
+        rollValEl.style.color = 'var(--c-amber)';
+        rollDirEl.textContent = 'Caída a Izquierda (Piloto)';
+      }
+
+      // Actualizar las 4 ruedas aplicando Histéresis (Zona muerta de 1,5 mm)
+      const shortNames = {
+        FL: 'Del. Izquierda',
+        FR: 'Del. Derecha',
+        RL: 'Tras. Izquierda',
+        RR: 'Tras. Derecha'
+      };
+
+      const wheelsSummary = [];
+
+      ['FL', 'FR', 'RL', 'RR'].forEach((id) => {
+        const rawLiftCm = Math.max(0, maxZ - zWheel[id]);
+        const rawCenterDelta = -zWheel[id];
+
+        if (forceImmediate || Math.abs(rawLiftCm - state.lockedLiftCm[id]) >= preset.cmDeadband || rawLiftCm < 0.1) {
+          state.lockedLiftCm[id] = rawLiftCm < 0.1 ? 0.0 : rawLiftCm;
+        }
+        if (forceImmediate || Math.abs(rawCenterDelta - state.lockedCenterCm[id]) >= preset.cmDeadband || Math.abs(rawCenterDelta) < 0.1) {
+          state.lockedCenterCm[id] = Math.abs(rawCenterDelta) < 0.1 ? 0.0 : rawCenterDelta;
+        }
+
+        const liftCm = state.lockedLiftCm[id];
+        const centerDelta = state.lockedCenterCm[id];
+        const step = evaluateFiammaStep(liftCm);
+
+        wheelsSummary.push({ id, name: shortNames[id], liftCm, step });
+
+        const cardEl = document.getElementById(`card-${id}`);
+        const liftEl = document.getElementById(`lift-${id}`);
+        const stepEl = document.getElementById(`step-${id}`);
+        const barsEl = document.getElementById(`bars-${id}`).children;
+        const centerEl = document.getElementById(`center-${id}`);
+
+        cardEl.className = `wheel-card ${step.borderClass}`;
+        liftEl.textContent = `+${fmtNum(liftCm)} cm`;
+        liftEl.style.color = step.colorHex;
+
+        stepEl.className = `step-pill ${step.pillClass}`;
+        stepEl.textContent = step.text;
+
+        for (let i = 0; i < 4; i++) {
+          barsEl[i].className = `f-bar b${i + 1}`;
+          if (step.barIdx === i + 1) {
+            barsEl[i].classList.add(`active-${i + 1}`);
+          }
+        }
+
+        if (Math.abs(centerDelta) < 0.2) {
+          centerEl.textContent = '0,0 cm';
+          centerEl.style.color = 'var(--c-green)';
+        } else if (centerDelta > 0) {
+          centerEl.textContent = `▲ SUBIR +${fmtNum(centerDelta)} cm`;
+          centerEl.style.color = 'var(--c-blue)';
+        } else {
+          centerEl.textContent = `▼ BAJAR -${fmtNum(Math.abs(centerDelta))} cm`;
+          centerEl.style.color = 'var(--c-orange)';
+        }
+      });
+
+      // Franja resumen inferior para los 2 calzos Fiamma
+      wheelsSummary.sort((a, b) => b.liftCm - a.liftCm);
+      const needChock = wheelsSummary.filter((w) => w.step.barIdx > 0);
+      const summaryEl = document.getElementById('summaryLine');
+
+      if (needChock.length === 0) {
+        summaryEl.textContent = '✅ Furgoneta a nivel · Ninguna rueda necesita calzo';
+        summaryEl.style.borderColor = 'rgba(16, 185, 129, 0.45)';
+        summaryEl.style.color = '#6ee7b7';
+      } else if (needChock.length === 1) {
+        const w1 = needChock[0];
+        summaryEl.textContent = `Calzo 1: ${w1.name} → ${w1.step.shortText} · Resto en suelo`;
+        summaryEl.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+        summaryEl.style.color = '#f8fafc';
+      } else {
+        const w1 = needChock[0];
+        const w2 = needChock[1];
+        summaryEl.textContent = `Calzo 1: ${w1.name} → ${w1.step.shortText} · Calzo 2: ${w2.name} → ${w2.step.shortText}`;
+        summaryEl.style.borderColor = 'rgba(245, 158, 11, 0.5)';
+        summaryEl.style.color = '#fde68a';
+      }
+    }
+
+    /* ==========================================================================
+       6. AJUSTE MANUAL (- / + Y DIANA TÁCTIL) + BOTONES INFERIORES
+       ========================================================================== */
+    function nudgeAngle(axis, delta) {
+      if (axis === 'pitch') {
+        state.emaPitch = Math.max(-8.0, Math.min(8.0, Math.round((state.emaPitch + delta) * 10) / 10));
+        state.pitchBuffer = [state.emaPitch];
+      } else {
+        state.emaRoll = Math.max(-8.0, Math.min(8.0, Math.round((state.emaRoll + delta) * 10) / 10));
+        state.rollBuffer = [state.emaRoll];
+      }
+      const netP = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
+      const netR = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      renderFluidBubble(netP, netR);
+      renderStabilizedNumbers(true);
+    }
+
+    const bullseyePad = document.getElementById('bullseyePad');
+    let isDraggingPad = false;
+
+    function updateFromPadTouch(clientX, clientY) {
+      const rect = bullseyePad.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const maxR = rect.width / 2;
+      const dx = Math.max(-maxR, Math.min(maxR, clientX - cx));
+      const dy = Math.max(-maxR, Math.min(maxR, clientY - cy));
+
+      state.emaRoll  = (-dx / maxR) * 4.0 + (state.hasTare ? state.tareRoll : 0);
+      state.emaPitch = (-dy / maxR) * 4.0 + (state.hasTare ? state.tarePitch : 0);
+      state.pitchBuffer = [state.emaPitch];
+      state.rollBuffer  = [state.emaRoll];
+
+      const netP = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
+      const netR = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      renderFluidBubble(netP, netR);
+      renderStabilizedNumbers(true);
+    }
+
+    bullseyePad.addEventListener('pointerdown', (e) => {
+      isDraggingPad = true;
+      bullseyePad.setPointerCapture(e.pointerId);
+      updateFromPadTouch(e.clientX, e.clientY);
+    });
+
+    bullseyePad.addEventListener('pointermove', (e) => {
+      if (!isDraggingPad) return;
+      updateFromPadTouch(e.clientX, e.clientY);
+    });
+
+    bullseyePad.addEventListener('pointerup', () => {
+      isDraggingPad = false;
+    });
+
+    function syncButtonsUI() {
+      // Botón Tarar
+      const btnTare = document.getElementById('btnTare');
+      const lblTare = document.getElementById('btnTareLabel');
+      if (state.hasTare) {
+        btnTare.classList.add('active-tare');
+        lblTare.textContent = '↺ BORRAR TARA';
+      } else {
+        btnTare.classList.remove('active-tare');
+        lblTare.textContent = '🎯 TARAR CERO';
+      }
+
+      // Botón Congelar
+      const btnFreeze = document.getElementById('btnFreeze');
+      const lblFreeze = document.getElementById('btnFreezeLabel');
+      const pill = document.getElementById('statusPill');
+      const dot = document.getElementById('statusDot');
+      const statusTxt = document.getElementById('statusText');
+
+      if (state.isFrozen) {
+        btnFreeze.classList.add('active-freeze');
+        lblFreeze.textContent = '❄️ FIJADO';
+        pill.classList.add('frozen');
+        dot.classList.remove('blinking');
+        statusTxt.textContent = '❄️ CONGELADO · PARÁMETROS';
+      } else {
+        btnFreeze.classList.remove('active-freeze');
+        lblFreeze.textContent = '❄️ CONGELAR';
+        pill.classList.remove('frozen');
+        dot.classList.add('blinking');
+        statusTxt.textContent = '🟢 EN VIVO · PARÁMETROS';
+      }
+
+      // Botón Orientación
+      document.getElementById('btnOrientLabel').textContent = ORIENTATIONS[state.orientIdx].label;
+
+      // Subtítulo cabecera con milímetros activos
+      document.getElementById('subSpecsHeader').textContent =
+        `Batalla ${state.wheelbaseMm} · Vías ${state.frontTrackMm}/${state.rearTrackMm} mm`;
+    }
+
+    // Botón 1: Tarar Cero en Encimera
+    document.getElementById('btnTare').addEventListener('click', () => {
+      if (state.hasTare) {
+        state.hasTare = false;
+        state.tarePitch = 0.0;
+        state.tareRoll = 0.0;
+        localStorage.removeItem('p6a_ducato_has_tare');
+        localStorage.removeItem('p6a_ducato_tare_p');
+        localStorage.removeItem('p6a_ducato_tare_r');
+      } else {
+        state.hasTare = true;
+        state.tarePitch = state.emaPitch;
+        state.tareRoll = state.emaRoll;
+        localStorage.setItem('p6a_ducato_has_tare', '1');
+        localStorage.setItem('p6a_ducato_tare_p', String(state.tarePitch));
+        localStorage.setItem('p6a_ducato_tare_r', String(state.tareRoll));
+      }
+      syncButtonsUI();
+      const netP = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
+      const netR = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      renderFluidBubble(netP, netR);
+      renderStabilizedNumbers(true);
+    });
+
+    // Botón 2: Congelar / Descongelar lectura en pantalla
+    document.getElementById('btnFreeze').addEventListener('click', () => {
+      state.isFrozen = !state.isFrozen;
+      syncButtonsUI();
+    });
+
+    // Botón 3: Cambiar orientación del Pixel 6a en la cocina
+    document.getElementById('btnOrient').addEventListener('click', () => {
+      state.orientIdx = (state.orientIdx + 1) % ORIENTATIONS.length;
+      localStorage.setItem('p6a_ducato_orient_idx', String(state.orientIdx));
+      state.pitchBuffer = [];
+      state.rollBuffer = [];
+      state.hasInitialSample = false;
+      syncButtonsUI();
+      renderStabilizedNumbers(true);
+    });
+
+    // Botón 4: Pitido guía al subir a los calzos
+    function scheduleBeep() {
+      if (!state.audioOn || !state.audioCtx) return;
+      const pitchDeg = state.lockedPitchDeg;
+      const rollDeg  = state.lockedRollDeg;
+      const tilt = Math.hypot(pitchDeg, rollDeg);
+
+      const now = state.audioCtx.currentTime;
+      const osc = state.audioCtx.createOscillator();
+      const gain = state.audioCtx.createGain();
+
+      if (tilt <= 0.4) {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, now);
+        gain.gain.setValueAtTime(0.12, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.connect(gain);
+        gain.connect(state.audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.3);
+        state.beepTimer = setTimeout(scheduleBeep, 900);
+      } else {
+        const freq = Math.min(760, Math.max(320, 740 - tilt * 80));
+        const waitMs = Math.min(750, Math.max(140, tilt * 165));
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now);
+        gain.gain.setValueAtTime(0.14, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.07);
+        osc.connect(gain);
+        gain.connect(state.audioCtx.destination);
+        osc.start(now);
+        osc.stop(now + 0.08);
+        state.beepTimer = setTimeout(scheduleBeep, waitMs);
+      }
+    }
+
+    document.getElementById('btnBeep').addEventListener('click', () => {
+      state.audioOn = !state.audioOn;
+      const btn = document.getElementById('btnBeep');
+      const lbl = document.getElementById('btnBeepLabel');
+      if (state.audioOn) {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        if (!state.audioCtx && AudioCtx) state.audioCtx = new AudioCtx();
+        if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
+        btn.classList.add('active-audio');
+        lbl.textContent = '🔊 PITIDO: ON';
+        scheduleBeep();
+      } else {
+        btn.classList.remove('active-audio');
+        lbl.textContent = '🔊 PITIDO: OFF';
+        if (state.beepTimer) clearTimeout(state.beepTimer);
+      }
+    });
+
+    /* ==========================================================================
+       7. MODAL DE FICHA TÉCNICA DE PARÁMETROS (DUCATO 2019 + FILTRO ANTITEMBLOR)
+       ========================================================================== */
+    function updateModalComputedLabels() {
+      const wb = parseFloat(document.getElementById('inpWheelbaseMm').value) || DEFAULT_SPECS.wheelbaseMm;
+      const ft = parseFloat(document.getElementById('inpFrontTrackMm').value) || DEFAULT_SPECS.frontTrackMm;
+      const rt = parseFloat(document.getElementById('inpRearTrackMm').value) || DEFAULT_SPECS.rearTrackMm;
+
+      document.getElementById('lblHalfWheelbase').textContent = (wb / 20).toFixed(2).replace('.', ',') + ' cm';
+      document.getElementById('lblHalfFrontTrack').textContent = (ft / 20).toFixed(2).replace('.', ',') + ' cm';
+      document.getElementById('lblHalfRearTrack').textContent = (rt / 20).toFixed(2).replace('.', ',') + ' cm';
+      document.getElementById('lblActiveSensorSource').textContent = state.sensorSourceLabel;
+
+      ['MAX', 'MED', 'FAST'].forEach((m) => {
+        const btn = document.getElementById(`damp-${m}`);
+        if (btn) btn.classList.toggle('active', m === state.dampingMode);
+      });
+      document.getElementById('lblDampingDesc').textContent = DAMPING_PRESETS[state.dampingMode].desc;
+    }
+
+    function setDampingMode(mode) {
+      if (!DAMPING_PRESETS[mode]) return;
+      state.dampingMode = mode;
+      localStorage.setItem('ducato19_damping', mode);
+      state.pitchBuffer = [];
+      state.rollBuffer = [];
+      updateModalComputedLabels();
+      renderStabilizedNumbers(true);
+    }
+
+    function openSpecsModal() {
+      document.getElementById('inpWheelbaseMm').value = state.wheelbaseMm;
+      document.getElementById('inpFrontTrackMm').value = state.frontTrackMm;
+      document.getElementById('inpRearTrackMm').value = state.rearTrackMm;
+      updateModalComputedLabels();
+      document.getElementById('specsModal').classList.add('open');
+    }
+
+    function closeSpecsModal() {
+      document.getElementById('specsModal').classList.remove('open');
+    }
+
+    ['inpWheelbaseMm', 'inpFrontTrackMm', 'inpRearTrackMm'].forEach((id) => {
+      document.getElementById(id).addEventListener('input', updateModalComputedLabels);
+    });
+
+    document.getElementById('statusPill').addEventListener('click', openSpecsModal);
+    document.getElementById('btnCloseSpecs').addEventListener('click', closeSpecsModal);
+
+    document.getElementById('btnResetFactory').addEventListener('click', () => {
+      document.getElementById('inpWheelbaseMm').value = DEFAULT_SPECS.wheelbaseMm;
+      document.getElementById('inpFrontTrackMm').value = DEFAULT_SPECS.frontTrackMm;
+      document.getElementById('inpRearTrackMm').value = DEFAULT_SPECS.rearTrackMm;
+      setDampingMode('MAX');
+      updateModalComputedLabels();
+    });
+
+    document.getElementById('btnSaveSpecs').addEventListener('click', () => {
+      const wb = Math.max(2500, Math.min(5000, parseInt(document.getElementById('inpWheelbaseMm').value, 10) || DEFAULT_SPECS.wheelbaseMm));
+      const ft = Math.max(1400, Math.min(2200, parseInt(document.getElementById('inpFrontTrackMm').value, 10) || DEFAULT_SPECS.frontTrackMm));
+      const rt = Math.max(1400, Math.min(2200, parseInt(document.getElementById('inpRearTrackMm').value, 10) || DEFAULT_SPECS.rearTrackMm));
+
+      state.wheelbaseMm = wb;
+      state.frontTrackMm = ft;
+      state.rearTrackMm = rt;
+
+      localStorage.setItem('ducato19_wb_mm', String(wb));
+      localStorage.setItem('ducato19_ft_mm', String(ft));
+      localStorage.setItem('ducato19_rt_mm', String(rt));
+
+      syncButtonsUI();
+      renderStabilizedNumbers(true);
+      closeSpecsModal();
+    });
+
+    // Descarga directa como index.html listo para reemplazar en GitHub Pages
+    document.getElementById('btnDownloadIndex').addEventListener('click', () => {
+      const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'index.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    });
+
+    window.addEventListener('DOMContentLoaded', () => {
+      syncButtonsUI();
+      renderFluidBubble(0, 0);
+      renderStabilizedNumbers(true);
+      startPixelSensors();
+    });
+  </script>
+</body>
+</html>
