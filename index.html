@@ -8,7 +8,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="application-name" content="Nivel Ducato" />
-  <title>DUCATO L3 MAXI 2019 · FIAMMA 4/8/12 cm</title>
+  <title>DUCATO L3H2 · FIAMMA 7/13/17 cm</title>
 
   <!-- Icono vectorial embebido para acceso directo en Android (Pixel Launcher) -->
   <link id="appIcon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='120' fill='%23000000'/%3E%3Ccircle cx='256' cy='256' r='200' fill='%23090d16' stroke='%2338bdf8' stroke-width='20'/%3E%3Cline x1='56' y1='256' x2='456' y2='256' stroke='%231e293b' stroke-width='10'/%3E%3Cline x1='256' y1='56' x2='256' y2='456' stroke='%231e293b' stroke-width='10'/%3E%3Ccircle cx='256' cy='256' r='56' fill='%2310b981'/%3E%3C/svg%3E" />
@@ -55,7 +55,7 @@
       max-width: 460px;
       min-height: 100dvh;
       margin: 0 auto;
-      padding: 6px 8px 70px 8px;
+      padding: 6px 8px 72px 8px;
       display: flex;
       flex-direction: column;
       gap: 6px;
@@ -85,37 +85,15 @@
       font-weight: 900;
       letter-spacing: 0.02em;
       color: #ffffff;
+      line-height: 1.15;
     }
 
     .app-subtitle {
-      font-size: 0.58rem;
+      font-size: 0.56rem;
       font-weight: 700;
       color: var(--text-muted);
-    }
-
-    .status-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 0.62rem;
-      font-weight: 800;
-      padding: 5px 8px;
-      border-radius: 999px;
-      cursor: pointer;
-      flex-shrink: 0;
-      border: 1px solid rgba(16, 185, 129, 0.45);
-      background: rgba(16, 185, 129, 0.14);
-      color: #34d399;
-    }
-
-    .status-pill:active {
-      transform: scale(0.96);
-    }
-
-    .status-pill.frozen {
-      border-color: rgba(34, 211, 238, 0.6);
-      background: rgba(34, 211, 238, 0.16);
-      color: #67e8f9;
+      line-height: 1.2;
+      margin-top: 1px;
     }
 
     .pulse-dot {
@@ -123,6 +101,7 @@
       height: 7px;
       border-radius: 50%;
       background-color: currentColor;
+      flex-shrink: 0;
     }
 
     .pulse-dot.blinking {
@@ -134,10 +113,80 @@
       50% { opacity: 0.35; transform: scale(0.82); }
     }
 
+    /* Botón simple "📺 Ver como Radio" en cabecera */
+    .radio-toggle-btn {
+      background: #111827;
+      border: 1px solid #334155;
+      color: #e2e8f0;
+      font-size: 0.6rem;
+      font-weight: 900;
+      padding: 5px 8px;
+      border-radius: 999px;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+
+    .radio-toggle-btn:active {
+      transform: scale(0.96);
+    }
+
+    .radio-toggle-btn.active-radio {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: #f59e0b;
+      color: #fde68a;
+    }
+
+    /* Banner de guía en vivo para la pantalla de la Radio cuando subes a los calzos */
+    .dash-stop-banner {
+      display: none;
+      border-radius: 12px;
+      padding: 9px 10px;
+      text-align: center;
+      border: 2px solid #334155;
+      background: #090d16;
+      transition: all 0.15s ease;
+    }
+
+    .dash-stop-banner.visible {
+      display: block;
+    }
+
+    .dash-stop-banner.state-go {
+      border-color: #f59e0b;
+      background: rgba(245, 158, 11, 0.14);
+    }
+
+    .dash-stop-banner.state-near {
+      border-color: #38bdf8;
+      background: rgba(56, 189, 248, 0.18);
+    }
+
+    .dash-stop-banner.state-stop {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.26);
+      box-shadow: 0 0 22px rgba(16, 185, 129, 0.4);
+    }
+
+    .dash-stop-title {
+      font-size: 1.0rem;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+      color: #ffffff;
+      line-height: 1.15;
+    }
+
+    .dash-stop-sub {
+      font-size: 0.66rem;
+      font-weight: 800;
+      color: #e2e8f0;
+      margin-top: 2px;
+    }
+
     /* 2. Centro Visual: Diana 2D + Indicadores Morro/Trasera y Piloto/Copiloto */
     .visual-center {
       display: grid;
-      grid-template-columns: 92px 1fr;
+      grid-template-columns: 90px 1fr;
       gap: 7px;
       align-items: center;
       background: var(--card-bg);
@@ -148,8 +197,8 @@
 
     .bullseye {
       position: relative;
-      width: 88px;
-      height: 88px;
+      width: 86px;
+      height: 86px;
       border-radius: 50%;
       background: radial-gradient(circle, #111827 0%, #030712 82%);
       border: 2px solid #334155;
@@ -185,8 +234,8 @@
 
     .bullseye-ring-ok {
       position: absolute;
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       border: 1.5px solid var(--c-green);
     }
@@ -217,7 +266,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
+      gap: 5px;
     }
 
     .angle-meta {
@@ -228,7 +277,7 @@
     }
 
     .angle-title {
-      font-size: 0.58rem;
+      font-size: 0.56rem;
       font-weight: 900;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -237,7 +286,7 @@
     }
 
     .angle-sub {
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       font-weight: 800;
       color: #e2e8f0;
       line-height: 1.2;
@@ -245,7 +294,7 @@
     }
 
     .angle-deg {
-      font-size: 1.08rem;
+      font-size: 1.04rem;
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       letter-spacing: -0.02em;
@@ -281,7 +330,7 @@
       transform: scale(0.94);
     }
 
-    /* Selector de modo de optimización (Prioridad Dormir vs Plano Neutro / Ducha) */
+    /* Selector de modo de optimización (Prioridad Dormir vs Plano Puro) */
     .mode-switch-bar {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -295,7 +344,7 @@
     .mode-btn {
       border-radius: 7px;
       padding: 5px 6px;
-      font-size: 0.62rem;
+      font-size: 0.61rem;
       font-weight: 900;
       color: #94a3b8;
       background: transparent;
@@ -303,6 +352,7 @@
       cursor: pointer;
       text-align: center;
       line-height: 1.15;
+      transition: all 0.15s ease;
     }
 
     .mode-btn.active {
@@ -343,21 +393,21 @@
     }
 
     .wheel-name {
-      font-size: 0.66rem;
+      font-size: 0.65rem;
       font-weight: 900;
       color: #ffffff;
       line-height: 1.1;
     }
 
     .wheel-side {
-      font-size: 0.56rem;
+      font-size: 0.55rem;
       font-weight: 700;
       color: var(--text-muted);
       line-height: 1.15;
     }
 
     .chock-tag {
-      font-size: 0.55rem;
+      font-size: 0.54rem;
       font-weight: 900;
       padding: 2px 5px;
       border-radius: 5px;
@@ -367,7 +417,13 @@
 
     .chock-tag-none {
       background: #111827;
-      color: #64748b;
+      color: #6ee7b7;
+      border: 1px solid rgba(16, 185, 129, 0.35);
+    }
+
+    .chock-tag-neutral {
+      background: #111827;
+      color: #94a3b8;
       border: 1px solid #1e293b;
     }
 
@@ -387,7 +443,7 @@
     .step-pill {
       width: 100%;
       text-align: center;
-      font-size: 0.66rem;
+      font-size: 0.65rem;
       font-weight: 900;
       padding: 5px 4px;
       border-radius: 7px;
@@ -402,13 +458,13 @@
     .pill-orange { background: rgba(249, 115, 22, 0.26); color: #fdba74; border: 1px solid rgba(249, 115, 22, 0.6); }
     .pill-red    { background: rgba(239, 68, 68, 0.28);  color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.65); }
 
-    /* Gráfico de 4 barras Fiamma: 4cm, 8cm, 12cm y Tope 16cm */
+    /* Gráfico de 4 barras Fiamma Level Up Premium (Ref. 97901-058): 7cm, 13cm, 17cm y Tope 20cm */
     .fiamma-bars {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 0.9fr;
       gap: 3px;
       align-items: end;
-      height: 19px;
+      height: 20px;
     }
 
     .f-bar {
@@ -424,9 +480,9 @@
       line-height: 1;
     }
 
-    .f-bar.b1 { height: 50%; }
+    .f-bar.b1 { height: 48%; }
     .f-bar.b2 { height: 70%; }
-    .f-bar.b3 { height: 88%; }
+    .f-bar.b3 { height: 86%; }
     .f-bar.b4 {
       height: 100%;
       border-color: rgba(239, 68, 68, 0.35);
@@ -442,7 +498,7 @@
     .wheel-meta-foot {
       border-top: 1px solid #141c2b;
       padding-top: 3px;
-      font-size: 0.58rem;
+      font-size: 0.56rem;
       font-weight: 700;
       color: #cbd5e1;
       line-height: 1.25;
@@ -455,15 +511,21 @@
       border: 1.5px solid rgba(56, 189, 248, 0.45);
       border-radius: 11px;
       padding: 7px 9px;
-      font-size: 0.65rem;
+      font-size: 0.64rem;
       line-height: 1.35;
       color: #f1f5f9;
       white-space: normal;
       word-wrap: break-word;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .plan-box.plan-ok-green {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.55);
     }
 
     .plan-box-title {
-      font-size: 0.62rem;
+      font-size: 0.6rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.03em;
@@ -472,6 +534,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 4px;
+    }
+
+    .plan-box.plan-ok-green .plan-box-title {
+      color: #34d399;
     }
 
     .rotate-hint {
@@ -501,7 +568,7 @@
     }
 
     .hab-title {
-      font-size: 0.6rem;
+      font-size: 0.59rem;
       font-weight: 900;
       text-transform: uppercase;
       color: var(--text-muted);
@@ -518,7 +585,7 @@
     }
 
     .hab-toggle-btn {
-      font-size: 0.56rem;
+      font-size: 0.55rem;
       font-weight: 800;
       padding: 3px 6px;
       border-radius: 5px;
@@ -557,13 +624,13 @@
     }
 
     .hab-name {
-      font-size: 0.61rem;
+      font-size: 0.6rem;
       font-weight: 900;
       color: #f8fafc;
     }
 
     .hab-badge {
-      font-size: 0.53rem;
+      font-size: 0.52rem;
       font-weight: 900;
       padding: 1.5px 5px;
       border-radius: 4px;
@@ -590,14 +657,14 @@
     }
 
     .hab-desc {
-      font-size: 0.56rem;
+      font-size: 0.55rem;
       font-weight: 600;
       color: #94a3b8;
       line-height: 1.2;
       white-space: normal;
     }
 
-    /* 6. Barra inferior fija con 4 botones táctiles */
+    /* 6. Barra inferior fija con 3 botones táctiles claros */
     .bottom-bar {
       position: fixed;
       bottom: 0;
@@ -605,13 +672,13 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 460px;
-      background: rgba(0, 0, 0, 0.94);
+      background: rgba(0, 0, 0, 0.95);
       backdrop-filter: blur(6px);
       border-top: 1px solid #1e293b;
       padding: 6px 8px 8px 8px;
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 5px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
       z-index: 40;
     }
 
@@ -619,9 +686,9 @@
       background: #0d1322;
       border: 1.5px solid #26354d;
       border-radius: 10px;
-      padding: 7px 3px;
+      padding: 8px 4px;
       color: #f8fafc;
-      font-size: 0.59rem;
+      font-size: 0.62rem;
       font-weight: 900;
       text-align: center;
       cursor: pointer;
@@ -634,19 +701,13 @@
     }
 
     .tactile-btn:active {
-      transform: scale(0.95);
+      transform: scale(0.96);
     }
 
     .tactile-btn.active-tare {
       border-color: var(--c-amber);
-      background: rgba(245, 158, 11, 0.15);
+      background: rgba(245, 158, 11, 0.16);
       color: #fcd34d;
-    }
-
-    .tactile-btn.active-freeze {
-      border-color: var(--c-cyan);
-      background: rgba(34, 211, 238, 0.16);
-      color: #67e8f9;
     }
 
     .tactile-btn.active-audio {
@@ -655,93 +716,67 @@
       color: #6ee7b7;
     }
 
-    /* Modal Técnico de Parámetros */
-    .modal-overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.88);
-      backdrop-filter: blur(4px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 14px;
-      z-index: 60;
+    /* Adaptación automática para pantalla panorámica de Radio Android (16:9) */
+    body.radio-view-mode .pixel-screen {
+      max-width: 960px;
     }
 
-    .modal-overlay.open {
-      display: flex;
+    body.radio-view-mode .angle-deg {
+      font-size: 1.32rem;
+      min-width: 56px;
     }
 
-    .modal-card {
-      background: #090d16;
-      border: 1.5px solid #334155;
-      border-radius: 16px;
-      padding: 15px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9);
-    }
-
-    .spec-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.72rem;
-    }
-
-    .spec-table td {
-      padding: 5px 4px;
-      border-bottom: 1px solid #162032;
-    }
-
-    .spec-input {
-      width: 74px;
-      background: #000000;
-      border: 1px solid #334155;
-      border-radius: 6px;
-      padding: 3px 6px;
-      color: #38bdf8;
-      font-weight: 800;
+    body.radio-view-mode .step-pill {
       font-size: 0.75rem;
-      text-align: right;
-      font-variant-numeric: tabular-nums;
+      padding: 7px 6px;
     }
 
-    .damping-btn {
-      flex: 1;
-      padding: 6px 4px;
-      font-size: 0.66rem;
-      font-weight: 800;
-      border-radius: 8px;
-      border: 1px solid #26354d;
-      background: #0d1322;
-      color: #94a3b8;
-      cursor: pointer;
-      text-align: center;
-    }
-
-    .damping-btn.active {
-      border-color: #10b981;
-      background: rgba(16, 185, 129, 0.16);
-      color: #34d399;
+    @media (orientation: landscape) and (min-width: 660px) {
+      .pixel-screen {
+        max-width: 960px;
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 8px;
+        align-items: start;
+        padding-bottom: 64px;
+      }
+      .top-bar,
+      .dash-stop-banner,
+      .mode-switch-bar {
+        grid-column: 1 / -1;
+      }
+      .bottom-bar {
+        max-width: 960px;
+      }
     }
   </style>
 </head>
 <body>
 
   <main class="pixel-screen">
-    <!-- 1. CABECERA COMPACTA CON HZ EN VIVO Y ACCESO A PARÁMETROS -->
+    <!-- 1. CABECERA ACTUALIZADA: FIAMMA KIT LEVEL UP PREMIUM (7 / 13 / 17 cm · Tope 20 cm) -->
     <header class="top-bar">
       <div class="app-title-wrap">
-        <div class="app-title">DUCATO L3 MAXI (2019) · 2 CALZOS FIAMMA</div>
-        <div id="subSpecsHeader" class="app-subtitle">Batalla 403,5 cm · Vías 181/179 cm · Escalones 4/8/12 cm</div>
+        <div class="app-title">DUCATO L3H2 · FIAMMA 7/13/17 cm</div>
+        <div class="app-subtitle">Batalla 403,5 · Vías 181/179 cm · Tope 20 cm (Sin calzos &lt; 4 cm)</div>
+        <div class="flex items-center gap-1.5 mt-0.5">
+          <span id="statusDot" class="pulse-dot blinking" style="color: #34d399;"></span>
+          <span id="statusText" class="text-[10px] font-extrabold text-emerald-400">🟢 Sensores activos · Nivelada &lt; 4 cm</span>
+        </div>
       </div>
-      <button id="statusPill" type="button" class="status-pill" title="Ver parámetros de chasis y filtro">
-        <span id="statusDot" class="pulse-dot blinking"></span>
-        <span id="statusText">🟢 EN VIVO · 0 Hz</span>
+
+      <button id="btnToggleRadio" type="button" class="radio-toggle-btn" onclick="toggleRadioViewMode()">
+        📺 Ver como Radio
       </button>
     </header>
 
-    <!-- 2. CENTRO VISUAL: DIANA 2D + MORRO/TRASERA Y PILOTO/COPILOTO -->
+    <!-- SEMÁFORO DE ASISTENCIA EN PANTALLA DE RADIO MIENTRAS SUBES AL CALZO -->
+    <section id="dashStopBanner" class="dash-stop-banner">
+      <div id="dashStopTitle" class="dash-stop-title">📺 Esperando al móvil en la encimera...</div>
+      <div id="dashStopSub" class="dash-stop-sub">Deja esta misma web abierta en tu Pixel 6a posado en la cocina</div>
+    </section>
+
+    <!-- 2. CENTRO VISUAL: DIANA CIRCULAR + MORRO/TRASERA Y PILOTO/COPILOTO -->
     <section class="visual-center">
       <div id="bullseyePad" class="bullseye" aria-label="Nivel de burbuja 2D interactivo">
         <div class="bullseye-cross-h"></div>
@@ -752,45 +787,45 @@
       </div>
 
       <div class="angles-col">
-        <!-- Eje Longitudinal: Morro / Trasera -->
+        <!-- Eje Longitudinal: Morro / Trasera (Cabeceo) -->
         <div class="angle-box">
           <div class="angle-meta">
-            <span class="angle-title">MORRO / TRASERA (Cabeceo · 403,5 cm)</span>
+            <span class="angle-title">MORRO / TRASERA (403,5 cm)</span>
             <span id="pitchDirLbl" class="angle-sub">Morro y trasera a nivel ✓</span>
           </div>
           <div class="step-adj-group">
-            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', -0.1)" aria-label="Bajar morro">−</button>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', -0.4)" aria-label="Bajar morro">−</button>
             <span id="pitchDegVal" class="angle-deg" style="color: var(--c-green);">0,0°</span>
-            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', 0.1)" aria-label="Subir morro">+</button>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('pitch', 0.4)" aria-label="Subir morro">+</button>
           </div>
         </div>
 
-        <!-- Eje Transversal: Piloto / Copiloto (Cama Transversal) -->
+        <!-- Eje Transversal: Piloto / Copiloto (Alabeo) -->
         <div class="angle-box">
           <div class="angle-meta">
-            <span class="angle-title">PILOTO / COPILOTO (Alabeo · 180 cm)</span>
+            <span class="angle-title">PILOTO / COPILOTO (181/179 cm)</span>
             <span id="rollDirLbl" class="angle-sub">Cama horizontal (Cabeza = Pies) ✓</span>
           </div>
           <div class="step-adj-group">
-            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', -0.1)" aria-label="Subir lado derecho (Cabeza)">−</button>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', -0.4)" aria-label="Subir lado derecho (Cabeza)">−</button>
             <span id="rollDegVal" class="angle-deg" style="color: var(--c-green);">0,0°</span>
-            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', 0.1)" aria-label="Bajar lado derecho (Cabeza)">+</button>
+            <button type="button" class="adj-btn" onclick="nudgeAngle('roll', 0.4)" aria-label="Bajar lado derecho (Cabeza)">+</button>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SELECTOR DE OBJETIVO DE NIVELACIÓN -->
-    <div class="mode-switch-bar" role="tablist">
-      <button type="button" id="modeBtnSleep" class="mode-btn active" onclick="setOptimizationGoal('SLEEP')">
-        🛏️ Prioridad Dormir (Cabeza Der. ≥ Pies)
+    <!-- SELECTOR DE PRIORIDAD DE NIVELACIÓN -->
+    <section class="mode-switch-bar" aria-label="Modo de prioridad de nivelación">
+      <button type="button" id="prioBtnSleep" class="mode-btn active" onclick="setPriorityMode('SLEEP')">
+        🛏️ Prioridad: Dormir (Cabeza Der.)
       </button>
-      <button type="button" id="modeBtnNeutral" class="mode-btn" onclick="setOptimizationGoal('NEUTRAL')">
-        🚿 Plano Neutro / Ducha (0,0°)
+      <button type="button" id="prioBtnFlat" class="mode-btn" onclick="setPriorityMode('FLAT')">
+        ⚖️ Prioridad: Plano Puro
       </button>
-    </div>
+    </section>
 
-    <!-- 3. CUADRÍCULA 2x2 DE LAS 4 RUEDAS (QUÉ HACER CON TUS 2 CALZOS) -->
+    <!-- 3. CUADRÍCULA 2x2 DE LAS 4 RUEDAS (ESCALONES FIAMMA 7, 13, 17 cm y TOPE 20 cm) -->
     <section class="wheels-grid">
       <!-- DEL. IZQUIERDA (FL) -->
       <article id="card-FL" class="wheel-card step-0-border">
@@ -801,15 +836,15 @@
           </div>
           <span id="tag-FL" class="chock-tag chock-tag-none">SIN CALZO</span>
         </div>
-        <div id="step-FL" class="step-pill pill-green">DEJAR EN SUELO (0 cm)</div>
+        <div id="step-FL" class="step-pill pill-green">SUELO (0 cm)</div>
         <div id="bars-FL" class="fiamma-bars">
-          <div class="f-bar b1">4</div>
-          <div class="f-bar b2">8</div>
-          <div class="f-bar b3">12</div>
-          <div class="f-bar b4">16</div>
+          <div class="f-bar b1">7</div>
+          <div class="f-bar b2">13</div>
+          <div class="f-bar b3">17</div>
+          <div class="f-bar b4">20</div>
         </div>
         <div id="meta-FL" class="wheel-meta-foot">
-          Desnivel actual: 0,0 cm · En plano
+          No calzar · &lt; 4 cm (0,0 cm)
         </div>
       </article>
 
@@ -822,15 +857,15 @@
           </div>
           <span id="tag-FR" class="chock-tag chock-tag-none">SIN CALZO</span>
         </div>
-        <div id="step-FR" class="step-pill pill-green">DEJAR EN SUELO (0 cm)</div>
+        <div id="step-FR" class="step-pill pill-green">SUELO (0 cm)</div>
         <div id="bars-FR" class="fiamma-bars">
-          <div class="f-bar b1">4</div>
-          <div class="f-bar b2">8</div>
-          <div class="f-bar b3">12</div>
-          <div class="f-bar b4">16</div>
+          <div class="f-bar b1">7</div>
+          <div class="f-bar b2">13</div>
+          <div class="f-bar b3">17</div>
+          <div class="f-bar b4">20</div>
         </div>
         <div id="meta-FR" class="wheel-meta-foot">
-          Desnivel actual: 0,0 cm · En plano
+          No calzar · &lt; 4 cm (0,0 cm)
         </div>
       </article>
 
@@ -843,15 +878,15 @@
           </div>
           <span id="tag-RL" class="chock-tag chock-tag-none">SIN CALZO</span>
         </div>
-        <div id="step-RL" class="step-pill pill-green">DEJAR EN SUELO (0 cm)</div>
+        <div id="step-RL" class="step-pill pill-green">SUELO (0 cm)</div>
         <div id="bars-RL" class="fiamma-bars">
-          <div class="f-bar b1">4</div>
-          <div class="f-bar b2">8</div>
-          <div class="f-bar b3">12</div>
-          <div class="f-bar b4">16</div>
+          <div class="f-bar b1">7</div>
+          <div class="f-bar b2">13</div>
+          <div class="f-bar b3">17</div>
+          <div class="f-bar b4">20</div>
         </div>
         <div id="meta-RL" class="wheel-meta-foot">
-          Desnivel actual: 0,0 cm · En plano
+          No calzar · &lt; 4 cm (0,0 cm)
         </div>
       </article>
 
@@ -864,41 +899,41 @@
           </div>
           <span id="tag-RR" class="chock-tag chock-tag-none">SIN CALZO</span>
         </div>
-        <div id="step-RR" class="step-pill pill-green">DEJAR EN SUELO (0 cm)</div>
+        <div id="step-RR" class="step-pill pill-green">SUELO (0 cm)</div>
         <div id="bars-RR" class="fiamma-bars">
-          <div class="f-bar b1">4</div>
-          <div class="f-bar b2">8</div>
-          <div class="f-bar b3">12</div>
-          <div class="f-bar b4">16</div>
+          <div class="f-bar b1">7</div>
+          <div class="f-bar b2">13</div>
+          <div class="f-bar b3">17</div>
+          <div class="f-bar b4">20</div>
         </div>
         <div id="meta-RR" class="wheel-meta-foot">
-          Desnivel actual: 0,0 cm · En plano
+          No calzar · &lt; 4 cm (0,0 cm)
         </div>
       </article>
     </section>
 
-    <!-- 4. BANNER DE INSTRUCCIÓN COMPLETO (SIN CORTAR TEXTO) Y RECOMENDACIÓN DE GIRO 180° -->
-    <section id="planBannerBox" class="plan-box">
+    <!-- 4. RECUADRO DE RESUMEN MULTILÍNEA (NUNCA CORTADO CON PUNTOS SUSPENSIVOS) -->
+    <section id="planBannerBox" class="plan-box plan-ok-green">
       <div class="plan-box-title">
-        <span>🛠️ PLAN ÓPTIMO CON TUS 2 CALZOS FIAMMA</span>
-        <span id="planResidualBadge" class="text-[10px] font-extrabold text-emerald-400">A NIVEL</span>
+        <span id="planTitleLabel">🛠️ PLAN CON TUS 2 CALZOS FIAMMA (7 / 13 / 17 cm)</span>
+        <span id="planResidualBadge" class="text-[10px] font-extrabold text-emerald-400">NIVELADA SIN CALZOS (&lt; 4 cm)</span>
       </div>
       <div id="planMainText">
-        ✅ Furgoneta lista sin calzos (desniveles menores de 2,0 cm). Dormirás plano con la cabeza en el lado del copiloto.
+        ✅ <strong>FURGONETA NIVELADA SIN CALZOS:</strong> Desnivel inferior a 4,0 cm. Lista para pernoctar sin sacar los Fiamma.
       </div>
       <div id="planRotateHint" class="rotate-hint" style="display: none;"></div>
     </section>
 
-    <!-- 5. PANEL DE ESCENARIOS DE HABITABILIDAD (ÓPTIMA / VÁLIDA / NO DESEABLE) -->
+    <!-- 5. MATRIZ DE HABITABILIDAD EN 4 TARJETAS COMPACTAS -->
     <section class="hab-section">
       <div class="hab-header">
-        <span class="hab-title">CONDICIONES DE USO EN EL INTERIOR</span>
+        <span class="hab-title">CONDICIONES INTERIORES (DORMIR · DUCHAR · COCINAR)</span>
         <div class="hab-toggle-group">
           <button type="button" id="habBtnAfter" class="hab-toggle-btn active" onclick="setHabViewMode('AFTER')">
             Tras Calzar
           </button>
           <button type="button" id="habBtnBefore" class="hab-toggle-btn" onclick="setHabViewMode('BEFORE')">
-            Actual (Suelo)
+            Suelo Actual
           </button>
         </div>
       </div>
@@ -908,7 +943,7 @@
         <div class="hab-card">
           <div class="hab-card-top">
             <span class="hab-name">🛏️ Dormir</span>
-            <span id="habBadgeSleep" class="hab-badge hab-optima">ÓPTIMA</span>
+            <span id="habBadgeSleep" class="hab-badge hab-optima">ÓPTIMO</span>
           </div>
           <div id="habDescSleep" class="hab-desc">
             Cabeza +0,0 cm sobre pies · Giro 0,0°
@@ -919,7 +954,7 @@
         <div class="hab-card">
           <div class="hab-card-top">
             <span class="hab-name">🚿 Duchar</span>
-            <span id="habBadgeShower" class="hab-badge hab-optima">ÓPTIMA</span>
+            <span id="habBadgeShower" class="hab-badge hab-optima">ÓPTIMO</span>
           </div>
           <div id="habDescShower" class="hab-desc">
             Caída limpia al desagüe Del-Der
@@ -929,19 +964,19 @@
         <!-- Cocinar / Sartén -->
         <div class="hab-card">
           <div class="hab-card-top">
-            <span class="hab-name">🍳 Cocinar</span>
-            <span id="habBadgeCook" class="hab-badge hab-optima">ÓPTIMA</span>
+            <span class="hab-name">🍳 Cocinar / Sartén</span>
+            <span id="habBadgeCook" class="hab-badge hab-optima">ÓPTIMO</span>
           </div>
           <div id="habDescCook" class="hab-desc">
             Inclinación 0,0° · Aceite centrado
           </div>
         </div>
 
-        <!-- Fregar y Mesa -->
+        <!-- Fregar / Mesa -->
         <div class="hab-card">
           <div class="hab-card-top">
             <span class="hab-name">🥛 Fregar / Mesa</span>
-            <span id="habBadgeTable" class="hab-badge hab-optima">ÓPTIMA</span>
+            <span id="habBadgeTable" class="hab-badge hab-optima">ÓPTIMO</span>
           </div>
           <div id="habDescTable" class="hab-desc">
             Vasos estables · Desagüe fregadero OK
@@ -950,246 +985,372 @@
       </div>
     </section>
 
-    <!-- 6. BARRA INFERIOR CON 4 BOTONES TÁCTILES -->
+    <!-- 6. BARRA INFERIOR CON SOLO 3 BOTONES CLAROS -->
     <footer class="bottom-bar">
       <button id="btnTare" type="button" class="tactile-btn">
-        <span id="btnTareLabel">🎯 TARAR CERO</span>
-      </button>
-
-      <button id="btnFreeze" type="button" class="tactile-btn">
-        <span id="btnFreezeLabel">❄️ CONGELAR</span>
+        <span id="btnTareLabel">🎯 Tarar Cero</span>
       </button>
 
       <button id="btnOrient" type="button" class="tactile-btn">
-        <span id="btnOrientLabel">📱 ⬆️ CABINA</span>
+        <span id="btnOrientLabel">⬆️ Móvil: Cabina</span>
       </button>
 
       <button id="btnBeep" type="button" class="tactile-btn">
-        <span id="btnBeepLabel">🔊 PITIDO: OFF</span>
+        <span id="btnBeepLabel">🔊 Pitido: OFF</span>
       </button>
     </footer>
   </main>
 
-  <!-- MODAL TÉCNICO: PARÁMETROS DE CHASIS Y DESCARGA DE INDEX.HTML -->
-  <div id="specsModal" class="modal-overlay" role="dialog" aria-modal="true">
-    <div class="modal-card space-y-3">
-      <div class="flex items-center justify-between border-b border-slate-800 pb-2">
-        <div>
-          <h2 class="text-sm font-black text-white">📐 Parámetros de Cálculo y Chasis</h2>
-          <p class="text-[11px] text-sky-400 font-bold">Fiat Ducato Maxi L3H2 (2019 · Chasis X290)</p>
-        </div>
-        <button id="btnCloseSpecs" type="button" class="text-slate-400 font-bold text-base px-2">✕</button>
-      </div>
-
-      <table class="spec-table text-slate-300">
-        <tbody>
-          <tr>
-            <td>
-              <strong class="text-white">Largo entre ejes (Batalla L3)</strong><br/>
-              <span class="text-[10px] text-slate-400">Semieje longitudinal: <span id="lblHalfWheelbase">201,75 cm</span></span>
-            </td>
-            <td class="text-right">
-              <input id="inpWheelbaseMm" type="number" class="spec-input" value="4035" min="2500" max="5000" step="5" />
-              <span class="text-[11px] text-slate-400 font-bold">mm</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <strong class="text-white">Ancho vía delantera (Eje Del.)</strong><br/>
-              <span class="text-[10px] text-slate-400">Semivía delantera: <span id="lblHalfFrontTrack">90,50 cm</span></span>
-            </td>
-            <td class="text-right">
-              <input id="inpFrontTrackMm" type="number" class="spec-input" value="1810" min="1400" max="2200" step="5" />
-              <span class="text-[11px] text-slate-400 font-bold">mm</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <strong class="text-white">Ancho vía trasera (Eje Tras.)</strong><br/>
-              <span class="text-[10px] text-slate-400">Semivía trasera: <span id="lblHalfRearTrack">89,50 cm</span></span>
-            </td>
-            <td class="text-right">
-              <input id="inpRearTrackMm" type="number" class="spec-input" value="1790" min="1400" max="2200" step="5" />
-              <span class="text-[11px] text-slate-400 font-bold">mm</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <strong class="text-white">Calzos Fiamma Level Up Prem. S</strong><br/>
-              <span class="text-[10px] text-slate-400">2 unidades · Cubierta 225/75 R16C</span>
-            </td>
-            <td class="text-right font-extrabold text-amber-400">
-              4 / 8 / 12 cm<br/>
-              <span class="text-[10px] text-red-400">Tope: 16 cm</span>
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <strong class="text-white">Sensor Activo en Pixel 6a</strong><br/>
-              <span class="text-[10px] text-slate-400">Fuente: <span id="lblActiveSensorSource" class="text-emerald-400 font-bold">Fusión Giroscopio</span></span>
-            </td>
-            <td class="text-right font-mono text-[11px] text-sky-300">
-              Δh = d · tan(θ)
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <!-- Selector de Amortiguación (Filtro Antitemblor) -->
-      <div class="space-y-1.5 pt-1">
-        <div class="flex items-center justify-between text-[11px]">
-          <span class="font-extrabold text-slate-300 uppercase">Filtro Antitemblor (Amortiguación)</span>
-          <span id="lblDampingDesc" class="text-emerald-400 font-bold">Media móvil 20 + Histéresis</span>
-        </div>
-        <div class="flex gap-1.5">
-          <button type="button" id="damp-MAX" class="damping-btn active" onclick="setDampingMode('MAX')">
-            Máxima Estabilidad
-          </button>
-          <button type="button" id="damp-MED" class="damping-btn" onclick="setDampingMode('MED')">
-            Media
-          </button>
-          <button type="button" id="damp-FAST" class="damping-btn" onclick="setDampingMode('FAST')">
-            Rápida
-          </button>
-        </div>
-      </div>
-
-      <div class="flex items-center justify-between gap-2 pt-2 border-t border-slate-800">
-        <button id="btnResetFactory" type="button" class="px-2.5 py-1.5 rounded-lg bg-slate-800 text-slate-300 text-[11px] font-bold">
-          ↺ Cotas Ducato 2019
-        </button>
-        <div class="flex gap-2">
-          <button id="btnDownloadIndex" type="button" class="px-2.5 py-1.5 rounded-lg bg-sky-600 text-white text-[11px] font-extrabold">
-            ⬇️ Bajar index.html
-          </button>
-          <button id="btnSaveSpecs" type="button" class="px-3 py-1.5 rounded-lg bg-emerald-500 text-black text-[11px] font-black">
-            Guardar
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <script>
     /* ==========================================================================
-       1. CONFIGURACIÓN GEOMÉTRICA Y PRESETS DE ESTABILIZACIÓN
+       1. COTAS FIJAS DE FIAT DUCATO L3H2 Y CALZOS FIAMMA KIT LEVEL UP PREMIUM
+          Ref. 97901-058 (CLUP): 83 × 26/31 cm · 5,0 t máx · Escalones 7, 13, 17 cm (Tope 20 cm)
        ========================================================================== */
-    const DEFAULT_SPECS = {
-      wheelbaseMm: 4035,
-      frontTrackMm: 1810,
-      rearTrackMm: 1790
-    };
+    const WHEELBASE_CM   = 403.5; // Batalla L3: 403,5 cm
+    const FRONT_TRACK_CM = 181.0; // Vía delantera: 181 cm
+    const REAR_TRACK_CM  = 179.0; // Vía trasera: 179 cm
 
-    const FIAMMA_STEPS = [0, 4, 8, 12];
-    const MIN_CHOCK_THRESHOLD_CM = 2.0; // Ignorar desniveles menores de 2,0 cm
+    // Escalones reales Fiamma Kit Level Up Premium (Ref. 97901-058)
+    const FIAMMA_STEPS = [0, 7, 13, 17];
+    const FIAMMA_SAFETY_LIP_CM = 20.0;
 
-    const DAMPING_PRESETS = {
-      MAX: {
-        windowSize: 18,
-        emaAlpha: 0.05,
-        angleDeadband: 0.05,
-        textRefreshMs: 300,
-        desc: 'Media móvil 18 + Histéresis'
-      },
-      MED: {
-        windowSize: 10,
-        emaAlpha: 0.10,
-        angleDeadband: 0.03,
-        textRefreshMs: 220,
-        desc: 'Media móvil 10 + Histéresis'
-      },
-      FAST: {
-        windowSize: 4,
-        emaAlpha: 0.25,
-        angleDeadband: 0.01,
-        textRefreshMs: 110,
-        desc: 'Respuesta directa rápida'
-      }
-    };
+    // Regla del usuario: menos de 4,0 cm de caída se da por nivelada SIN calzos
+    const MIN_CHOCK_THRESHOLD_CM = 4.0;
+    const STEP_1_MAX_CM          = 10.0; // 4,0 a 10,0 cm -> Escalón 1 (7 cm)
+    const STEP_2_MAX_CM          = 15.0; // 10,0 a 15,0 cm -> Escalón 2 (13 cm)
+    const STEP_3_WARN_CM         = 18.5; // 15,0 a 18,5 cm -> Escalón 3 (17 cm); > 18,5 cm -> Alerta Tope 20 cm
+
+    // Canal privado fijo para sincronizar automáticamente móvil y radio Android sin códigos
+    const PRIVATE_SYNC_TOPIC = 'jasreinosa-ducato-l3h2-sync';
+    const MQTT_BROKERS = [
+      'wss://broker.emqx.io:8084/mqtt',
+      'wss://broker.hivemq.com:8884/mqtt'
+    ];
 
     const ORIENTATIONS = [
-      { id: 'FRONT', label: '📱 ⬆️ CABINA' },
-      { id: 'LEFT',  label: '📱 ⬅️ PASILLO' },
-      { id: 'REAR',  label: '📱 ⬇️ TRASERAS' },
-      { id: 'RIGHT', label: '📱 ➡️ CORREDERA' }
+      { id: 'FRONT', label: '⬆️ Móvil: Cabina' },
+      { id: 'LEFT',  label: '⬅️ Móvil: Pasillo' },
+      { id: 'REAR',  label: '⬇️ Móvil: Traseras' },
+      { id: 'RIGHT', label: '➡️ Móvil: Corredera' }
     ];
 
     const state = {
-      wheelbaseMm: parseInt(localStorage.getItem('ducato19_wb_mm') || '4035', 10),
-      frontTrackMm: parseInt(localStorage.getItem('ducato19_ft_mm') || '1810', 10),
-      rearTrackMm: parseInt(localStorage.getItem('ducato19_rt_mm') || '1790', 10),
-      dampingMode: localStorage.getItem('ducato19_damping') || 'MAX',
+      // Vista: false = Móvil en encimera, true = Radio Android del salpicadero
+      isRadioView: false,
+      manualRadioOverride: false,
+      hasLocalSensors: false,
+      remoteConnected: false,
+      lastRemoteTimestamp: 0,
+      stopChimePlayed: false,
 
-      // Modo de optimización: 'SLEEP' (Prioridad Dormir Cabeza Der >= Pies) o 'NEUTRAL' (Plano 0°)
-      optimizationGoal: localStorage.getItem('ducato19_goal') || 'SLEEP',
-      // Vista de escenarios de habitabilidad: 'AFTER' (Tras calzar) o 'BEFORE' (Actual en suelo)
-      habViewMode: 'AFTER',
-
-      orientationSensorLocked: false,
-      sensorSourceLabel: 'Manual / Simulador',
-      sensorEventCounter: 0,
-      currentHz: 0,
-
-      pitchBuffer: [],
-      rollBuffer: [],
-      emaPitch: 0.0,
-      emaRoll: 0.0,
+      // Motor adaptativo de sensores + Histéresis (±0,2°) + Refresco pausado (350 ms)
+      smoothPitch: 0.0,
+      smoothRoll: 0.0,
       hasInitialSample: false,
-
       lockedPitchDeg: 0.0,
       lockedRollDeg: 0.0,
       lastNumericRenderTs: 0,
 
+      // Calibración (Tara), orientación del móvil, prioridad y vista de habitabilidad
       hasTare: localStorage.getItem('p6a_ducato_has_tare') === '1',
       tarePitch: parseFloat(localStorage.getItem('p6a_ducato_tare_p')) || 0.0,
       tareRoll: parseFloat(localStorage.getItem('p6a_ducato_tare_r')) || 0.0,
       orientIdx: parseInt(localStorage.getItem('p6a_ducato_orient_idx') || '0', 10),
-      isFrozen: false,
+      priorityMode: localStorage.getItem('p6a_ducato_prio_mode') === 'FLAT' ? 'FLAT' : 'SLEEP',
+      habViewMode: 'AFTER',
 
+      // Guía sonora
       audioOn: false,
       audioCtx: null,
       beepTimer: null
     };
 
-    if (!DAMPING_PRESETS[state.dampingMode]) state.dampingMode = 'MAX';
-    if (isNaN(state.orientIdx) || state.orientIdx < 0 || state.orientIdx > 3) state.orientIdx = 0;
+    if (isNaN(state.orientIdx) || state.orientIdx < 0 || state.orientIdx > 3) {
+      state.orientIdx = 0;
+    }
 
+    /* ==========================================================================
+       2. SINCRONIZACIÓN TRANSPARENTE EN SEGUNDO PLANO (MQTT WSS + BROADCAST)
+       ========================================================================== */
+    let mqttWs = null;
+    let mqttBrokerIdx = 0;
+    let mqttConnected = false;
+    let mqttPingTimer = null;
+    let mqttReconnectTimer = null;
+    let localChannel = null;
+
+    try {
+      if ('BroadcastChannel' in window) {
+        localChannel = new BroadcastChannel(PRIVATE_SYNC_TOPIC);
+        localChannel.onmessage = (ev) => {
+          if (state.isRadioView && ev.data) {
+            applyRemoteAngles(ev.data);
+          }
+        };
+      }
+    } catch (e) {}
+
+    function encodeMqttLength(len) {
+      const out = [];
+      do {
+        let digit = len % 128;
+        len = Math.floor(len / 128);
+        if (len > 0) digit |= 0x80;
+        out.push(digit);
+      } while (len > 0);
+      return out;
+    }
+
+    function encodeMqttUtf8(str) {
+      const bytes = new TextEncoder().encode(str);
+      return [(bytes.length >> 8) & 0xff, bytes.length & 0xff, ...bytes];
+    }
+
+    function buildMqttConnectPacket(clientId) {
+      const protocolName = encodeMqttUtf8('MQTT');
+      const body = [...protocolName, 0x04, 0x02, 0x00, 0x1e, ...encodeMqttUtf8(clientId)];
+      return new Uint8Array([0x10, ...encodeMqttLength(body.length), ...body]);
+    }
+
+    function buildMqttSubscribePacket(topic) {
+      const body = [0x00, 0x01, ...encodeMqttUtf8(topic), 0x00];
+      return new Uint8Array([0x82, ...encodeMqttLength(body.length), ...body]);
+    }
+
+    function buildMqttPublishPacket(topic, jsonStr) {
+      const body = [...encodeMqttUtf8(topic), ...new TextEncoder().encode(jsonStr)];
+      return new Uint8Array([0x30, ...encodeMqttLength(body.length), ...body]);
+    }
+
+    function connectBackgroundSync() {
+      if (mqttPingTimer) { clearInterval(mqttPingTimer); mqttPingTimer = null; }
+      if (mqttReconnectTimer) { clearTimeout(mqttReconnectTimer); mqttReconnectTimer = null; }
+      if (mqttWs) {
+        try { mqttWs.onclose = null; mqttWs.close(); } catch (e) {}
+        mqttWs = null;
+      }
+      mqttConnected = false;
+
+      const url = MQTT_BROKERS[mqttBrokerIdx % MQTT_BROKERS.length];
+      try {
+        mqttWs = new WebSocket(url, 'mqtt');
+        mqttWs.binaryType = 'arraybuffer';
+      } catch (e) {
+        scheduleNextBroker();
+        return;
+      }
+
+      const failTimer = setTimeout(() => {
+        if (!mqttConnected) scheduleNextBroker();
+      }, 4500);
+
+      mqttWs.onopen = () => {
+        const cid = 'ducato_' + Math.random().toString(36).substring(2, 9);
+        mqttWs.send(buildMqttConnectPacket(cid));
+      };
+
+      mqttWs.onmessage = (event) => {
+        const data = new Uint8Array(event.data);
+        if (!data || data.length < 2) return;
+        const pktType = data[0] >> 4;
+
+        if (pktType === 2) {
+          clearTimeout(failTimer);
+          mqttConnected = true;
+          mqttWs.send(buildMqttSubscribePacket(PRIVATE_SYNC_TOPIC));
+          mqttPingTimer = setInterval(() => {
+            if (mqttWs && mqttWs.readyState === WebSocket.OPEN) {
+              mqttWs.send(new Uint8Array([0xc0, 0x00]));
+            }
+          }, 20000);
+        } else if (pktType === 3) {
+          let idx = 1;
+          let mult = 1;
+          let remLen = 0;
+          let b;
+          do {
+            b = data[idx++];
+            remLen += (b & 127) * mult;
+            mult *= 128;
+          } while ((b & 128) !== 0 && idx < data.length);
+
+          if (idx + 2 > data.length) return;
+          const topicLen = (data[idx] << 8) | data[idx + 1];
+          idx += 2 + topicLen;
+          const qos = (data[0] >> 1) & 0x03;
+          if (qos > 0) idx += 2;
+
+          try {
+            const payload = JSON.parse(new TextDecoder().decode(data.slice(idx)));
+            if (state.isRadioView || !state.hasLocalSensors) {
+              if (!state.isRadioView && !state.manualRadioOverride) {
+                enableRadioView(false);
+              }
+              applyRemoteAngles(payload);
+            }
+          } catch (e) {}
+        }
+      };
+
+      mqttWs.onerror = () => clearTimeout(failTimer);
+      mqttWs.onclose = () => {
+        clearTimeout(failTimer);
+        mqttConnected = false;
+        scheduleNextBroker();
+      };
+    }
+
+    function scheduleNextBroker() {
+      if (mqttReconnectTimer) clearTimeout(mqttReconnectTimer);
+      mqttBrokerIdx = (mqttBrokerIdx + 1) % MQTT_BROKERS.length;
+      mqttReconnectTimer = setTimeout(connectBackgroundSync, 1800);
+    }
+
+    // Emitir automáticamente desde el móvil cada 160 ms cuando los sensores están activos
+    setInterval(() => {
+      if (state.isRadioView || !state.hasLocalSensors) return;
+      const netPitch = Number((state.smoothPitch - (state.hasTare ? state.tarePitch : 0)).toFixed(2));
+      const netRoll  = Number((state.smoothRoll  - (state.hasTare ? state.tareRoll  : 0)).toFixed(2));
+      const packet = { p: netPitch, r: netRoll, t: Date.now() };
+
+      if (localChannel) {
+        try { localChannel.postMessage(packet); } catch (e) {}
+      }
+      if (mqttWs && mqttWs.readyState === WebSocket.OPEN && mqttConnected) {
+        try {
+          mqttWs.send(buildMqttPublishPacket(PRIVATE_SYNC_TOPIC, JSON.stringify(packet)));
+        } catch (e) {}
+      }
+    }, 160);
+
+    function applyRemoteAngles(msg) {
+      if (typeof msg.p !== 'number' || typeof msg.r !== 'number') return;
+      state.lastRemoteTimestamp = Date.now();
+      state.remoteConnected = true;
+
+      state.smoothPitch = msg.p;
+      state.smoothRoll  = msg.r;
+
+      renderFluidBubble(msg.p, msg.r);
+      const now = performance.now();
+      if (now - state.lastNumericRenderTs >= 350) {
+        state.lastNumericRenderTs = now;
+        renderStabilizedNumbers(false);
+      }
+      updateHeaderStatusIndicator();
+    }
+
+    function enableRadioView(isManual) {
+      state.isRadioView = true;
+      if (isManual) state.manualRadioOverride = true;
+      document.body.classList.add('radio-view-mode');
+      document.getElementById('dashStopBanner').classList.add('visible');
+      const btn = document.getElementById('btnToggleRadio');
+      btn.classList.add('active-radio');
+      btn.textContent = '📱 Volver a Móvil';
+      updateHeaderStatusIndicator();
+      renderStabilizedNumbers(true);
+    }
+
+    function disableRadioView(isManual) {
+      state.isRadioView = false;
+      if (isManual) state.manualRadioOverride = true;
+      document.body.classList.remove('radio-view-mode');
+      document.getElementById('dashStopBanner').classList.remove('visible');
+      const btn = document.getElementById('btnToggleRadio');
+      btn.classList.remove('active-radio');
+      btn.textContent = '📺 Ver como Radio';
+      updateHeaderStatusIndicator();
+      renderStabilizedNumbers(true);
+    }
+
+    function toggleRadioViewMode() {
+      if (state.isRadioView) {
+        disableRadioView(true);
+      } else {
+        enableRadioView(true);
+      }
+    }
+
+    function updateHeaderStatusIndicator() {
+      const txtEl = document.getElementById('statusText');
+      const dotEl = document.getElementById('statusDot');
+      const isRemoteFresh = (Date.now() - state.lastRemoteTimestamp) < 3500;
+
+      if (state.isRadioView) {
+        if (isRemoteFresh) {
+          txtEl.textContent = '📺 Conectado al móvil en vivo';
+          txtEl.className = 'text-[10px] font-extrabold text-amber-300';
+          dotEl.style.color = '#fbbf24';
+        } else {
+          txtEl.textContent = '📺 Esperando al móvil...';
+          txtEl.className = 'text-[10px] font-extrabold text-slate-400';
+          dotEl.style.color = '#94a3b8';
+        }
+      } else {
+        txtEl.textContent = '🟢 Sensores activos · Nivelada < 4 cm';
+        txtEl.className = 'text-[10px] font-extrabold text-emerald-400';
+        dotEl.style.color = '#34d399';
+      }
+    }
+
+    /* ==========================================================================
+       3. ALGORITMO INTELIGENTE DE NIVELACIÓN CON 2 CALZOS FIAMMA (7, 13, 17 cm)
+          - Regla clave: Si una rueda cae < 4,0 cm (o el desnivel total es < 4,0 cm),
+            NO se pone calzo y se da por nivelada la furgoneta sin calzos.
+          - Umbrales por rueda:
+            * < 4,0 cm         -> Suelo (0 cm) ("No calzar · < 4 cm")
+            * 4,0 a 10,0 cm    -> Escalón 1 (7 cm)
+            * 10,0 a 15,0 cm   -> Escalón 2 (13 cm)
+            * 15,0 a 18,5 cm   -> Escalón 3 (17 cm)
+            * > 18,5 cm        -> ⚠️ >17 cm (Tope 20 cm)
+       ========================================================================== */
     function fmtNum(n) {
       const clean = Math.abs(n) < 0.05 ? 0 : n;
       return clean.toFixed(1).replace('.', ',');
     }
 
-    function fmtSignedCm(n) {
-      const clean = Math.abs(n) < 0.05 ? 0 : n;
-      const sign = clean > 0 ? '+' : '';
-      return `${sign}${clean.toFixed(1).replace('.', ',')} cm`;
+    function roundHalfCm(n) {
+      const r = Math.round(n * 2) / 2;
+      return Math.abs(r) < 0.25 ? 0 : r;
     }
 
-    /* ==========================================================================
-       2. ALGORITMO INTELIGENTE DE NIVELACIÓN CON 2 CALZOS FIAMMA (4, 8, 12 cm)
-       - Evalúa todas las combinaciones físicamente seguras con máximo 2 calzos:
-         ningún calzo, 1 solo calzo, o 2 calzos en el mismo eje (Delantero/Trasero)
-         o en el mismo lateral (Izquierdo/Derecho) para evitar torsión de chasis.
-       - Ignora ruedas cuyo desnivel inicial sea menor de 2,0 cm.
-       - En modo 'SLEEP', busca cabeceo longitudinal ~0° y que la cabeza (lado
-         Derecho/Copiloto) quede entre 0,0 cm y +2,5 cm por encima de los pies.
-       ========================================================================== */
-    function generateValidTwoChockCandidates(dropsCm) {
-      const candidates = [];
-      // Candidato base: sin calzos
-      candidates.push({ FL: 0, FR: 0, RL: 0, RR: 0 });
+    function fmtHalfCm(n, withPlus = true) {
+      const r = roundHalfCm(n);
+      if (r === 0) return '0,0 cm';
+      const sign = r > 0 ? (withPlus ? '+' : '') : '';
+      return `${sign}${r.toFixed(1).replace('.', ',')} cm`;
+    }
 
+    function mapDropToDirectStep(dropCm) {
+      if (dropCm < MIN_CHOCK_THRESHOLD_CM) {
+        return { stepIdx: 0, chockCm: 0, rangeText: 'No calzar · < 4 cm', warnLip20: false };
+      }
+      if (dropCm < STEP_1_MAX_CM) {
+        return { stepIdx: 1, chockCm: 7, rangeText: 'Escalón 1 (4 a 10 cm)', warnLip20: false };
+      }
+      if (dropCm < STEP_2_MAX_CM) {
+        return { stepIdx: 2, chockCm: 13, rangeText: 'Escalón 2 (10 a 15 cm)', warnLip20: false };
+      }
+      if (dropCm <= STEP_3_WARN_CM) {
+        return { stepIdx: 3, chockCm: 17, rangeText: 'Escalón 3 (15 a 18,5 cm)', warnLip20: false };
+      }
+      return { stepIdx: 3, chockCm: 17, rangeText: '⚠️ >18,5 cm (Tope 20 cm)', warnLip20: true };
+    }
+
+    function generateValidTwoChockCandidates(dropsCm) {
+      const candidates = [{ FL: 0, FR: 0, RL: 0, RR: 0 }];
       const wheels = ['FL', 'FR', 'RL', 'RR'];
+
+      // Ninguna rueda con caída < 4,0 cm se calza jamás
       const validStepsForWheel = (w) => {
-        // Si la rueda baja menos de 2,0 cm respecto a la más alta, se ignora
         if (dropsCm[w] < MIN_CHOCK_THRESHOLD_CM) return [0];
         return FIAMMA_STEPS;
       };
 
-      // 1 solo calzo en cualquiera de las 4 ruedas
+      // Opciones con 1 solo calzo
       wheels.forEach((w) => {
-        const steps = validStepsForWheel(w);
-        steps.forEach((s) => {
+        validStepsForWheel(w).forEach((s) => {
           if (s > 0) {
             const c = { FL: 0, FR: 0, RL: 0, RR: 0 };
             c[w] = s;
@@ -1198,7 +1359,7 @@
         });
       });
 
-      // Parejas de 2 calzos en el mismo eje o mismo lateral (nunca en diagonal)
+      // Opciones con 2 calzos en el mismo eje o mismo lateral (sin torsionar el chasis)
       const safePairs = [
         ['FL', 'FR'], // Eje delantero
         ['RL', 'RR'], // Eje trasero
@@ -1224,7 +1385,7 @@
       return candidates;
     }
 
-    function evaluateCandidateState(z0, chocks, L_cm, W_front_cm, W_rear_cm, goalMode) {
+    function evaluateCandidateState(z0, chocks, priorityMode) {
       const zNew = {
         FL: z0.FL + chocks.FL,
         FR: z0.FR + chocks.FR,
@@ -1232,60 +1393,23 @@
         RR: z0.RR + chocks.RR
       };
 
-      // Diferencia longitudinal (Morro menos Trasera, en cm)
       const frontAvg = (zNew.FL + zNew.FR) / 2;
       const rearAvg  = (zNew.RL + zNew.RR) / 2;
       const deltaLongCm = frontAvg - rearAvg;
-      const newPitchDeg = Math.atan2(deltaLongCm, L_cm) * (180 / Math.PI);
+      const newPitchDeg = Math.atan2(deltaLongCm, WHEELBASE_CM) * (180 / Math.PI);
 
-      // Diferencia transversal en cama trasera: Cabeza (RR, Copiloto) menos Pies (RL, Piloto)
+      // Cama trasera transversal: Cabeza en Derecha (RR, Copiloto) vs Pies en Izquierda (RL, Piloto)
       const headMinusFeetRearCm = zNew.RR - zNew.RL;
       const rightAvg = (zNew.FR + zNew.RR) / 2;
       const leftAvg  = (zNew.FL + zNew.RL) / 2;
       const headMinusFeetAvgCm = rightAvg - leftAvg;
-      const W_avg_cm = (W_front_cm + W_rear_cm) / 2;
-      // Recordatorio de signo: roll > 0 significa caída a la derecha (Cabeza baja)
+      const W_avg_cm = (FRONT_TRACK_CM + REAR_TRACK_CM) / 2;
       const newRollDeg = Math.atan2(-headMinusFeetAvgCm, W_avg_cm) * (180 / Math.PI);
 
-      // Torsión planar del chasis
       const twistCm = Math.abs((zNew.FL + zNew.RR) - (zNew.FR + zNew.RL));
-
-      // Número de calzos empleados
       const chocksUsed = (chocks.FL > 0 ? 1 : 0) + (chocks.FR > 0 ? 1 : 0) +
                          (chocks.RL > 0 ? 1 : 0) + (chocks.RR > 0 ? 1 : 0);
       const totalLiftCm = chocks.FL + chocks.FR + chocks.RL + chocks.RR;
-
-      let cost = 0;
-
-      if (goalMode === 'SLEEP') {
-        // 1. Penalización longitudinal (evitar rodar de lado en el colchón transversal)
-        cost += Math.pow(deltaLongCm, 2) * 2.4;
-
-        // 2. Penalización lateral en la cama (Cabeza en lado derecho Copiloto vs Pies en izquierdo)
-        // Rango ideal: Cabeza entre 0,0 cm y +2,2 cm más alta que los pies
-        if (headMinusFeetRearCm < 0) {
-          // Pies más altos que la cabeza: penalización muy fuerte
-          cost += Math.pow(Math.abs(headMinusFeetRearCm) + 0.6, 2) * 5.2;
-        } else if (headMinusFeetRearCm <= 2.2) {
-          // Zona dulce para dormir (0 a +2,2 cm con cabeza alta): coste mínimo alrededor de +1,0 cm
-          cost += Math.pow(headMinusFeetRearCm - 0.9, 2) * 0.25;
-        } else {
-          // Demasiada inclinación lateral (> +2,2 cm)
-          cost += Math.pow(headMinusFeetRearCm - 2.0, 2) * 2.6;
-        }
-      } else {
-        // Modo NEUTRAL / DUCHA: buscar plano 0,0 cm en ambos ejes
-        cost += Math.pow(deltaLongCm, 2) * 2.5;
-        cost += Math.pow(headMinusFeetAvgCm, 2) * 2.5;
-      }
-
-      // 3. Penalizar torsión excesiva del chasis (> 2,0 cm)
-      if (twistCm > 2.0) {
-        cost += Math.pow(twistCm - 2.0, 2) * 3.8;
-      }
-
-      // 4. Umbral de activación para no poner calzos si la mejora es insignificante (< 2 cm)
-      cost += chocksUsed * 3.2 + totalLiftCm * 0.08;
 
       const maxAfterZ = Math.max(zNew.FL, zNew.FR, zNew.RL, zNew.RR);
       const residualDropsCm = {
@@ -1294,35 +1418,66 @@
         RL: maxAfterZ - zNew.RL,
         RR: maxAfterZ - zNew.RR
       };
+      const maxResidualSpreadCm = Math.max(
+        residualDropsCm.FL,
+        residualDropsCm.FR,
+        residualDropsCm.RL,
+        residualDropsCm.RR
+      );
+
+      let cost = 0;
+
+      // 1. Eje longitudinal plano (evitar rodar de lado en el colchón transversal)
+      cost += Math.pow(deltaLongCm, 2) * 2.6;
+
+      if (priorityMode === 'SLEEP') {
+        // 2A. Modo Prioridad DORMIR: Cabeza (Derecha) entre 0,0 cm y +3,5 cm sobre los pies (Izquierda)
+        if (headMinusFeetRearCm < -0.2) {
+          // Penalización fuerte si los pies quedan más altos que la cabeza
+          cost += Math.pow(Math.abs(headMinusFeetRearCm) + 1.2, 2) * 5.8;
+        } else if (headMinusFeetRearCm <= 3.5) {
+          // Rango óptimo de postura de sueño (cabeza plana o hasta +3,5 cm más alta)
+          cost += Math.pow(headMinusFeetRearCm - 1.2, 2) * 0.25;
+        } else {
+          // Exceso de inclinación lateral (> +3,5 cm)
+          cost += Math.pow(headMinusFeetRearCm - 2.5, 2) * 2.6;
+        }
+      } else {
+        // 2B. Modo Prioridad PLANO PURO: minimizar tanto alabeo como cabeceo a 0,0 cm
+        cost += Math.pow(headMinusFeetAvgCm, 2) * 2.6;
+      }
+
+      // 3. Penalizar torsión del chasis
+      if (twistCm > 2.5) {
+        cost += Math.pow(twistCm - 2.5, 2) * 3.8;
+      }
+
+      // 4. Desempate suave por menor número de calzos y menor altura innecesaria
+      cost += chocksUsed * 1.4 + totalLiftCm * 0.04;
 
       return {
         chocks,
         chocksUsed,
         zNew,
         residualDropsCm,
+        maxResidualSpreadCm,
         deltaLongCm,
         headMinusFeetRearCm,
-        headMinusFeetAvgCm,
         newPitchDeg,
         newRollDeg,
-        twistCm,
         cost
       };
     }
 
-    function solveBestTwoChockPlan(pitchDeg, rollDeg) {
-      const L_cm       = state.wheelbaseMm / 10;   // 403,5 cm
-      const W_front_cm = state.frontTrackMm / 10;  // 181,0 cm
-      const W_rear_cm  = state.rearTrackMm / 10;   // 179,0 cm
-
+    function solveBestTwoChockPlan(pitchDeg, rollDeg, priorityMode) {
       const pitchRad = (pitchDeg * Math.PI) / 180;
       const rollRad  = (rollDeg  * Math.PI) / 180;
 
-      const dy       = (L_cm / 2)       * Math.tan(pitchRad);
-      const dx_front = (W_front_cm / 2) * Math.tan(rollRad);
-      const dx_rear  = (W_rear_cm / 2)  * Math.tan(rollRad);
+      const dy       = (WHEELBASE_CM / 2)   * Math.tan(pitchRad);
+      const dx_front = (FRONT_TRACK_CM / 2) * Math.tan(rollRad);
+      const dx_rear  = (REAR_TRACK_CM / 2)  * Math.tan(rollRad);
 
-      // Cota inicial Z de cada rueda respecto al centro geométrico
+      // Cota Z de cada rueda respecto al plano central de la furgoneta
       const z0 = {
         FL: +dy + dx_front,
         FR: +dy - dx_front,
@@ -1331,7 +1486,6 @@
       };
 
       const maxZ0 = Math.max(z0.FL, z0.FR, z0.RL, z0.RR);
-      // Cuánto más baja está cada rueda respecto a la rueda más alta (positivo = cm que le faltan)
       const dropsCm = {
         FL: maxZ0 - z0.FL,
         FR: maxZ0 - z0.FR,
@@ -1339,67 +1493,47 @@
         RR: maxZ0 - z0.RR
       };
 
-      const baseState = evaluateCandidateState(
-        z0,
-        { FL: 0, FR: 0, RL: 0, RR: 0 },
-        L_cm,
-        W_front_cm,
-        W_rear_cm,
-        state.optimizationGoal
-      );
+      const maxDropCm = Math.max(dropsCm.FL, dropsCm.FR, dropsCm.RL, dropsCm.RR);
+      const baseState = evaluateCandidateState(z0, { FL: 0, FR: 0, RL: 0, RR: 0 }, priorityMode);
+
+      // Regla de oro del usuario: si el desnivel máximo entre ruedas es < 4,0 cm,
+      // se da por nivelada la furgoneta sin calzos.
+      if (maxDropCm < MIN_CHOCK_THRESHOLD_CM) {
+        return { z0, dropsCm, maxDropCm, baseState, bestPlan: baseState };
+      }
 
       const candidates = generateValidTwoChockCandidates(dropsCm);
       let bestPlan = baseState;
 
       for (let i = 0; i < candidates.length; i++) {
-        const evaluated = evaluateCandidateState(
-          z0,
-          candidates[i],
-          L_cm,
-          W_front_cm,
-          W_rear_cm,
-          state.optimizationGoal
-        );
+        const evaluated = evaluateCandidateState(z0, candidates[i], priorityMode);
         if (evaluated.cost < bestPlan.cost) {
           bestPlan = evaluated;
         }
       }
 
-      return {
-        z0,
-        dropsCm,
-        baseState,
-        bestPlan
-      };
+      return { z0, dropsCm, maxDropCm, baseState, bestPlan };
     }
 
     /* ==========================================================================
-       3. EVALUACIÓN DE LOS 4 ESCENARIOS DE HABITABILIDAD
+       4. MATRIZ DE HABITABILIDAD (ÓPTIMO / VÁLIDO / NO DESEABLE)
        ========================================================================== */
     function evaluateHabitability(pitchDeg, rollDeg, headMinusFeetRearCm) {
       const totalTiltDeg = Math.hypot(pitchDeg, rollDeg);
       const absPitch = Math.abs(pitchDeg);
 
-      // 1. DORMIR (Cabeza en lado derecho Copiloto, Pies en izquierdo Piloto)
-      let sleepStatus = 'ÓPTIMA';
-      let sleepClass = 'hab-optima';
-      if (
-        headMinusFeetRearCm >= -0.3 &&
-        headMinusFeetRearCm <= 3.0 &&
-        absPitch <= 0.65
-      ) {
-        sleepStatus = 'ÓPTIMA';
-        sleepClass = 'hab-optima';
-      } else if (
-        headMinusFeetRearCm >= -1.2 &&
-        headMinusFeetRearCm <= 4.5 &&
-        absPitch <= 1.25
-      ) {
-        sleepStatus = 'VÁLIDA';
-        sleepClass = 'hab-valida';
+      // 1. DORMIR (Cama transversal trasera: Cabeza en Copiloto / Derecha, Pies en Piloto / Izquierda)
+      let sleepStatus = 'ÓPTIMO';
+      let sleepClass  = 'hab-optima';
+      if (headMinusFeetRearCm >= -0.5 && headMinusFeetRearCm <= 3.5 && absPitch <= 0.8) {
+        sleepStatus = 'ÓPTIMO';
+        sleepClass  = 'hab-optima';
+      } else if (headMinusFeetRearCm >= -1.8 && headMinusFeetRearCm <= 5.0 && absPitch <= 1.5) {
+        sleepStatus = 'VÁLIDO';
+        sleepClass  = 'hab-valida';
       } else {
         sleepStatus = 'NO DESEABLE';
-        sleepClass = 'hab-nodeseable';
+        sleepClass  = 'hab-nodeseable';
       }
 
       let sleepDesc = '';
@@ -1408,62 +1542,61 @@
       } else if (headMinusFeetRearCm > 0) {
         sleepDesc = `Cabeza +${fmtNum(headMinusFeetRearCm)} cm sobre pies · Giro ${fmtNum(absPitch)}°`;
       } else {
-        sleepDesc = `⚠️ Pies +${fmtNum(Math.abs(headMinusFeetRearCm))} cm sobre cabeza · Giro ${fmtNum(absPitch)}°`;
+        sleepDesc = `⚠️ Pies +${fmtNum(Math.abs(headMinusFeetRearCm))} cm sobre cabeza`;
       }
 
-      // 2. DUCHAR (Desagüe en esquina Delantera-Derecha: requiere trasera/izquierda altas -> pitch <= 0, roll >= 0)
-      let showerStatus = 'ÓPTIMA';
-      let showerClass = 'hab-optima';
-      let showerDesc = '';
-
-      if (pitchDeg <= 0.45 && rollDeg >= -0.45) {
-        showerStatus = 'ÓPTIMA';
-        showerClass = 'hab-optima';
-        showerDesc = 'Agua fluye directa al desagüe Del-Der';
-      } else if (pitchDeg <= 1.05 && rollDeg >= -1.05) {
-        showerStatus = 'VÁLIDA';
-        showerClass = 'hab-valida';
-        showerDesc = 'Desnivel inverso leve · Drena casi todo';
+      // 2. DUCHAR (Desagüe en lado derecho / delantero-derecho)
+      let showerStatus = 'ÓPTIMO';
+      let showerClass  = 'hab-optima';
+      let showerDesc   = '';
+      if (pitchDeg <= 0.55 && rollDeg >= -0.55) {
+        showerStatus = 'ÓPTIMO';
+        showerClass  = 'hab-optima';
+        showerDesc   = 'Caída limpia al desagüe derecho';
+      } else if (pitchDeg <= 1.2 && rollDeg >= -1.2) {
+        showerStatus = 'VÁLIDO';
+        showerClass  = 'hab-valida';
+        showerDesc   = 'Drena bien con leve retención';
       } else {
         showerStatus = 'NO DESEABLE';
-        showerClass = 'hab-nodeseable';
-        showerDesc = 'Agua retenida lejos del desagüe Del-Der';
+        showerClass  = 'hab-nodeseable';
+        showerDesc   = 'Agua tiende al lado opuesto al desagüe';
       }
 
       // 3. COCINAR / SARTÉN CON ACEITE
-      let cookStatus = 'ÓPTIMA';
-      let cookClass = 'hab-optima';
-      let cookDesc = '';
+      let cookStatus = 'ÓPTIMO';
+      let cookClass  = 'hab-optima';
+      let cookDesc   = '';
       if (totalTiltDeg <= 0.85) {
-        cookStatus = 'ÓPTIMA';
-        cookClass = 'hab-optima';
-        cookDesc = `Inclinación ${fmtNum(totalTiltDeg)}° · Aceite bien repartido`;
+        cookStatus = 'ÓPTIMO';
+        cookClass  = 'hab-optima';
+        cookDesc   = `Inclinación ${fmtNum(totalTiltDeg)}° · Aceite centrado`;
       } else if (totalTiltDeg <= 1.75) {
-        cookStatus = 'VÁLIDA';
-        cookClass = 'hab-valida';
-        cookDesc = `Inclinación ${fmtNum(totalTiltDeg)}° · Aceite algo ladeado`;
+        cookStatus = 'VÁLIDO';
+        cookClass  = 'hab-valida';
+        cookDesc   = `Inclinación ${fmtNum(totalTiltDeg)}° · Aceite ladeado leve`;
       } else {
         cookStatus = 'NO DESEABLE';
-        cookClass = 'hab-nodeseable';
-        cookDesc = `Inclinación ${fmtNum(totalTiltDeg)}° · Aceite se va a un borde`;
+        cookClass  = 'hab-nodeseable';
+        cookDesc   = `Inclinación ${fmtNum(totalTiltDeg)}° · Charco en borde sartén`;
       }
 
-      // 4. FREGAR Y MESA (VASO DE AGUA)
-      let tableStatus = 'ÓPTIMA';
-      let tableClass = 'hab-optima';
-      let tableDesc = '';
-      if (totalTiltDeg <= 1.05) {
-        tableStatus = 'ÓPTIMA';
-        tableClass = 'hab-optima';
-        tableDesc = `Inclinación ${fmtNum(totalTiltDeg)}° · Vasos y fregadero OK`;
-      } else if (totalTiltDeg <= 2.2) {
-        tableStatus = 'VÁLIDA';
-        tableClass = 'hab-valida';
-        tableDesc = `Inclinación ${fmtNum(totalTiltDeg)}° · Mesa utilizable`;
+      // 4. FREGAR / MESA / VASO DE AGUA
+      let tableStatus = 'ÓPTIMO';
+      let tableClass  = 'hab-optima';
+      let tableDesc   = '';
+      if (totalTiltDeg <= 1.0) {
+        tableStatus = 'ÓPTIMO';
+        tableClass  = 'hab-optima';
+        tableDesc   = 'Vasos estables · Fregadero drena OK';
+      } else if (totalTiltDeg <= 2.1) {
+        tableStatus = 'VÁLIDO';
+        tableClass  = 'hab-valida';
+        tableDesc   = 'Mesa usable · Usar alfombrilla silicona';
       } else {
         tableStatus = 'NO DESEABLE';
-        tableClass = 'hab-nodeseable';
-        tableDesc = `Inclinación ${fmtNum(totalTiltDeg)}° · Mesa y fregadero incómodos`;
+        tableClass  = 'hab-nodeseable';
+        tableDesc   = 'Deslizamiento de objetos en encimera';
       }
 
       return {
@@ -1475,133 +1608,135 @@
     }
 
     /* ==========================================================================
-       4. LECTURA DE SENSORES EN VIVO Y FILTRO PASO BAJO
+       5. LECTURA DE SENSORES DEL MÓVIL (FILTRO ADAPTATIVO + HISTÉRESIS ±0,2°)
+          - Fuente principal: `deviceorientation` (fallback `devicemotion` tras 800 ms).
+          - Filtro adaptativo en tiempo real:
+            * diff > 4.0°: convergencia instantánea al posar el móvil en la encimera.
+            * diff > 1.2°: alpha = 0.65 (movimiento rápido).
+            * diff > 0.3°: alpha = 0.25 (subiendo por el calzo Fiamma).
+            * diff <= 0.3°: alpha = 0.08 (móvil quieto en la encimera).
+          - Histéresis de ±0,2° y refresco numérico máximo cada 350 ms.
        ========================================================================== */
     function mapPhoneToVan(beta, gamma) {
       const mode = ORIENTATIONS[state.orientIdx].id;
       switch (mode) {
-        case 'FRONT':
-          return { pitch: beta, roll: gamma };
-        case 'LEFT':
-          return { pitch: -gamma, roll: beta };
-        case 'REAR':
-          return { pitch: -beta, roll: -gamma };
-        case 'RIGHT':
-          return { pitch: gamma, roll: -beta };
-        default:
-          return { pitch: beta, roll: gamma };
+        case 'FRONT': return { pitch: beta, roll: gamma };
+        case 'LEFT':  return { pitch: -gamma, roll: beta };
+        case 'REAR':  return { pitch: -beta, roll: -gamma };
+        case 'RIGHT': return { pitch: gamma, roll: -beta };
+        default:      return { pitch: beta, roll: gamma };
       }
     }
 
-    function feedSensorAngles(rawBeta, rawGamma, sourceName) {
-      if (state.isFrozen) return;
+    function feedSensorAngles(rawBeta, rawGamma) {
+      if (state.isRadioView) return;
       if (typeof rawBeta !== 'number' || typeof rawGamma !== 'number' || isNaN(rawBeta) || isNaN(rawGamma)) {
         return;
       }
 
-      state.sensorEventCounter++;
-      state.sensorSourceLabel = sourceName;
-      const preset = DAMPING_PRESETS[state.dampingMode];
+      state.hasLocalSensors = true;
       const mapped = mapPhoneToVan(rawBeta, rawGamma);
-
-      state.pitchBuffer.push(mapped.pitch);
-      state.rollBuffer.push(mapped.roll);
-      while (state.pitchBuffer.length > preset.windowSize) state.pitchBuffer.shift();
-      while (state.rollBuffer.length > preset.windowSize) state.rollBuffer.shift();
-
-      let sumP = 0;
-      let sumR = 0;
-      for (let i = 0; i < state.pitchBuffer.length; i++) {
-        sumP += state.pitchBuffer[i];
-        sumR += state.rollBuffer[i];
-      }
-      const avgPitch = sumP / state.pitchBuffer.length;
-      const avgRoll  = sumR / state.rollBuffer.length;
+      const targetPitch = mapped.pitch;
+      const targetRoll  = mapped.roll;
 
       if (!state.hasInitialSample) {
-        state.emaPitch = avgPitch;
-        state.emaRoll = avgRoll;
-        state.lockedPitchDeg = avgPitch;
-        state.lockedRollDeg = avgRoll;
+        state.smoothPitch = targetPitch;
+        state.smoothRoll  = targetRoll;
+        state.lockedPitchDeg = targetPitch - (state.hasTare ? state.tarePitch : 0);
+        state.lockedRollDeg  = targetRoll  - (state.hasTare ? state.tareRoll  : 0);
         state.hasInitialSample = true;
-      } else {
-        state.emaPitch += preset.emaAlpha * (avgPitch - state.emaPitch);
-        state.emaRoll  += preset.emaAlpha * (avgRoll  - state.emaRoll);
+        state.lastNumericRenderTs = performance.now();
+        renderFluidBubble(state.lockedPitchDeg, state.lockedRollDeg);
+        renderStabilizedNumbers(true);
+        return;
       }
 
-      const netPitchFluid = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
-      const netRollFluid  = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
-      renderFluidBubble(netPitchFluid, netRollFluid);
+      // Filtro adaptativo según la magnitud del movimiento
+      const diff = Math.hypot(targetPitch - state.smoothPitch, targetRoll - state.smoothRoll);
+      if (diff > 4.0) {
+        // Salto grande al posar el móvil en la encimera: convergencia instantánea
+        state.smoothPitch = targetPitch;
+        state.smoothRoll  = targetRoll;
+      } else {
+        const alpha = diff > 1.2 ? 0.65 : (diff > 0.3 ? 0.25 : 0.08);
+        state.smoothPitch += alpha * (targetPitch - state.smoothPitch);
+        state.smoothRoll  += alpha * (targetRoll  - state.smoothRoll);
+      }
 
+      const netP = state.smoothPitch - (state.hasTare ? state.tarePitch : 0);
+      const netR = state.smoothRoll  - (state.hasTare ? state.tareRoll  : 0);
+
+      // La burbuja se mueve fluida en tiempo real
+      renderFluidBubble(netP, netR);
+
+      // Los números solo se evalúan como máximo cada 350 ms
       const now = performance.now();
-      if (now - state.lastNumericRenderTs >= preset.textRefreshMs) {
+      if (now - state.lastNumericRenderTs >= 350) {
         state.lastNumericRenderTs = now;
         renderStabilizedNumbers(false);
       }
     }
 
-    function onDeviceOrientation(event) {
-      if (event.beta === null || event.gamma === null) return;
-      state.orientationSensorLocked = true;
-      feedSensorAngles(event.beta, event.gamma, 'Fusión Giroscopio + Acelerómetro');
-    }
+    function startSensors() {
+      let orientationActive = false;
+      let motionFallbackAttached = false;
 
-    function onDeviceMotionFallback(event) {
-      if (state.orientationSensorLocked) return;
-      const acc = event.accelerationIncludingGravity;
-      if (!acc || acc.x === null || acc.y === null || acc.z === null) return;
-
-      const x = acc.x;
-      const y = acc.y;
-      const z = acc.z;
-      if (Math.hypot(x, y, z) < 1.0) return;
-
-      const zSafe = Math.abs(z) < 0.001 ? 0.001 : z;
-      const betaDeg = Math.atan2(y, zSafe) * (180 / Math.PI);
-      const gammaDeg = Math.atan2(-x, Math.hypot(y, zSafe)) * (180 / Math.PI);
-
-      feedSensorAngles(betaDeg, gammaDeg, 'Acelerómetro Gravitatorio');
-    }
-
-    function startPixelSensors() {
-      window.addEventListener('deviceorientation', onDeviceOrientation, true);
-      window.addEventListener('deviceorientationabsolute', onDeviceOrientation, true);
-      window.addEventListener('devicemotion', onDeviceMotionFallback, true);
-
-      // Contador de Hz reales cada segundo
-      setInterval(() => {
-        state.currentHz = state.sensorEventCounter;
-        state.sensorEventCounter = 0;
-        if (!state.isFrozen) {
-          const statusTxt = document.getElementById('statusText');
-          if (state.currentHz > 0) {
-            statusTxt.textContent = `🟢 EN VIVO · ${state.currentHz} Hz`;
-          } else {
-            statusTxt.textContent = '🟢 MANUAL / PARÁMETROS';
-          }
+      const onOrientation = (e) => {
+        if (e.beta === null || e.gamma === null) return;
+        orientationActive = true;
+        if (motionFallbackAttached) {
+          window.removeEventListener('devicemotion', onMotionFallback, true);
+          motionFallbackAttached = false;
         }
-      }, 1000);
+        feedSensorAngles(e.beta, e.gamma);
+      };
+
+      const onMotionFallback = (e) => {
+        if (orientationActive) return;
+        const acc = e.accelerationIncludingGravity;
+        if (!acc || acc.x === null || acc.y === null || acc.z === null) return;
+        if (Math.hypot(acc.x, acc.y, acc.z) < 1.0) return;
+        const zSafe = Math.abs(acc.z) < 0.001 ? 0.001 : acc.z;
+        const betaDeg  = Math.atan2(acc.y, zSafe) * (180 / Math.PI);
+        const gammaDeg = Math.atan2(-acc.x, Math.hypot(acc.y, zSafe)) * (180 / Math.PI);
+        feedSensorAngles(betaDeg, gammaDeg);
+      };
+
+      window.addEventListener('deviceorientation', onOrientation, true);
+
+      setTimeout(() => {
+        if (!orientationActive && !motionFallbackAttached) {
+          motionFallbackAttached = true;
+          window.addEventListener('devicemotion', onMotionFallback, true);
+        }
+      }, 800);
+
+      // Si a los 1,8 s el dispositivo carece de acelerómetro (Radio Android), activa vista Radio
+      setTimeout(() => {
+        if (!state.hasLocalSensors && !state.manualRadioOverride) {
+          enableRadioView(false);
+        }
+      }, 1800);
+
+      setInterval(updateHeaderStatusIndicator, 1000);
 
       if ('wakeLock' in navigator) {
         navigator.wakeLock.request('screen').catch(() => {});
       }
     }
 
-    /* ==========================================================================
-       5. RENDERIZADO DE INTERFAZ Y TARJETAS DE LAS 4 RUEDAS
-       ========================================================================== */
     function renderFluidBubble(pitchDeg, rollDeg) {
       const maxTilt = 4.0;
-      const maxPx = 30;
+      const maxPx = 29;
       const bx = Math.max(-maxPx, Math.min(maxPx, (-rollDeg / maxTilt) * maxPx));
       const by = Math.max(-maxPx, Math.min(maxPx, (-pitchDeg / maxTilt) * maxPx));
       const bubble = document.getElementById('bubbleDot');
       bubble.style.transform = `translate(${bx.toFixed(1)}px, ${by.toFixed(1)}px)`;
 
       const totalTilt = Math.hypot(pitchDeg, rollDeg);
-      if (totalTilt <= 0.5) {
+      if (totalTilt <= 0.65) {
         bubble.style.background = 'radial-gradient(circle at 30% 30%, #6ee7b7, #10b981)';
-      } else if (totalTilt <= 2.0) {
+      } else if (totalTilt <= 2.2) {
         bubble.style.background = 'radial-gradient(circle at 30% 30%, #fde68a, #f59e0b)';
       } else {
         bubble.style.background = 'radial-gradient(circle at 30% 30%, #fca5a5, #ef4444)';
@@ -1609,78 +1744,86 @@
     }
 
     function renderStabilizedNumbers(forceImmediate) {
-      const preset = DAMPING_PRESETS[state.dampingMode];
-      const targetPitch = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
-      const targetRoll  = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      const targetPitch = state.isRadioView
+        ? state.smoothPitch
+        : state.smoothPitch - (state.hasTare ? state.tarePitch : 0);
+      const targetRoll = state.isRadioView
+        ? state.smoothRoll
+        : state.smoothRoll - (state.hasTare ? state.tareRoll : 0);
 
-      if (forceImmediate || Math.abs(targetPitch - state.lockedPitchDeg) >= preset.angleDeadband) {
+      // Banda muerta con histéresis de ±0,2° para clavar los números cuando el móvil está apoyado
+      let changed = false;
+      if (forceImmediate || Math.abs(targetPitch - state.lockedPitchDeg) > 0.2) {
         state.lockedPitchDeg = targetPitch;
+        changed = true;
       }
-      if (forceImmediate || Math.abs(targetRoll - state.lockedRollDeg) >= preset.angleDeadband) {
+      if (forceImmediate || Math.abs(targetRoll - state.lockedRollDeg) > 0.2) {
         state.lockedRollDeg = targetRoll;
+        changed = true;
       }
+      if (!changed) return;
 
       const pitchDeg = state.lockedPitchDeg;
       const rollDeg  = state.lockedRollDeg;
 
-      // Resolver el plan óptimo con 2 calzos y el plan si giramos la furgoneta 180°
-      const solution = solveBestTwoChockPlan(pitchDeg, rollDeg);
-      const rotatedSolution = solveBestTwoChockPlan(-pitchDeg, -rollDeg);
+      const solution = solveBestTwoChockPlan(pitchDeg, rollDeg, state.priorityMode);
+      const rotatedSolution = solveBestTwoChockPlan(-pitchDeg, -rollDeg, state.priorityMode);
+      const { dropsCm, maxDropCm, baseState, bestPlan } = solution;
 
-      const { dropsCm, baseState, bestPlan } = solution;
-
-      // 1. Actualizar cuadro MORRO / TRASERA (Cabeceo)
+      // 1. Lectura Morro / Trasera (Cabeceo)
       const pitchValEl = document.getElementById('pitchDegVal');
       const pitchDirEl = document.getElementById('pitchDirLbl');
       pitchValEl.textContent = `${(pitchDeg > 0.05 ? '+' : '') + fmtNum(pitchDeg)}°`;
-      if (Math.abs(pitchDeg) < 0.25) {
+      const absLongCm = Math.abs(baseState.deltaLongCm);
+      if (absLongCm < MIN_CHOCK_THRESHOLD_CM) {
         pitchValEl.style.color = 'var(--c-green)';
-        pitchDirEl.textContent = 'Morro y trasera a nivel ✓';
+        pitchDirEl.textContent = absLongCm < 0.5
+          ? 'Morro y trasera a nivel ✓'
+          : `En rango sin calzos (${fmtHalfCm(absLongCm, false)} < 4 cm) ✓`;
       } else if (pitchDeg > 0) {
         pitchValEl.style.color = 'var(--c-amber)';
-        pitchDirEl.textContent = `Morro alto / Trasera baja (${fmtSignedCm(-baseState.deltaLongCm)} atrás)`;
+        pitchDirEl.textContent = `Trasera baja (Subir detrás ${fmtHalfCm(absLongCm, true)})`;
       } else {
         pitchValEl.style.color = 'var(--c-amber)';
-        pitchDirEl.textContent = `Morro bajo / Trasera alta (${fmtSignedCm(baseState.deltaLongCm)} delante)`;
+        pitchDirEl.textContent = `Morro bajo (Subir delante ${fmtHalfCm(absLongCm, true)})`;
       }
 
-      // 2. Actualizar cuadro PILOTO / COPILOTO (Alabeo y postura de Cabeza en cama)
+      // 2. Lectura Piloto / Copiloto (Alabeo)
       const rollValEl = document.getElementById('rollDegVal');
       const rollDirEl = document.getElementById('rollDirLbl');
       rollValEl.textContent = `${(rollDeg > 0.05 ? '+' : '') + fmtNum(rollDeg)}°`;
-      const headDiffNow = baseState.headMinusFeetRearCm;
-      if (Math.abs(headDiffNow) < 0.4) {
+      const headDiffNow = roundHalfCm(baseState.headMinusFeetRearCm);
+      if (Math.abs(headDiffNow) < 0.5) {
         rollValEl.style.color = 'var(--c-green)';
         rollDirEl.textContent = 'Cama horizontal (Cabeza = Pies) ✓';
       } else if (headDiffNow > 0) {
-        rollValEl.style.color = headDiffNow <= 3.0 ? 'var(--c-green)' : 'var(--c-amber)';
-        rollDirEl.textContent = `✅ Cabeza alta [Copiloto] (+${fmtNum(headDiffNow)} cm vs pies)`;
+        rollValEl.style.color = headDiffNow <= 3.5 ? 'var(--c-green)' : 'var(--c-amber)';
+        rollDirEl.textContent = `✅ Cabeza alta [Copiloto] (${fmtHalfCm(headDiffNow, true)} vs pies)`;
       } else {
-        rollValEl.style.color = 'var(--c-red)';
-        rollDirEl.textContent = `⚠️ Cabeza baja [Copiloto] (${fmtNum(headDiffNow)} cm vs pies)`;
+        rollValEl.style.color = Math.abs(headDiffNow) < MIN_CHOCK_THRESHOLD_CM ? 'var(--c-amber)' : 'var(--c-red)';
+        rollDirEl.textContent = `⚠️ Cabeza baja [Copiloto] (${fmtHalfCm(headDiffNow, false)} vs pies)`;
       }
 
-      // 3. Asignar etiquetas "CALZO 1" y "CALZO 2" ordenando por mayor altura de calzo
+      // 3. Ordenar ruedas que llevan calzo (Calzo 1 y Calzo 2)
       const wheelOrder = ['FL', 'FR', 'RL', 'RR'].filter((w) => bestPlan.chocks[w] > 0);
       wheelOrder.sort((a, b) => bestPlan.chocks[b] - bestPlan.chocks[a] || dropsCm[b] - dropsCm[a]);
       const chockNumberMap = {};
-      wheelOrder.forEach((w, idx) => {
-        chockNumberMap[w] = idx + 1;
-      });
+      wheelOrder.forEach((w, idx) => { chockNumberMap[w] = idx + 1; });
 
       const wheelLabels = {
-        FL: 'DEL. IZQUIERDA (Piloto)',
-        FR: 'DEL. DERECHA (Copiloto)',
-        RL: 'TRAS. IZQUIERDA (Pies cama)',
-        RR: 'TRAS. DERECHA (Cabeza cama)'
+        FL: 'Del. Izquierda (Piloto)',
+        FR: 'Del. Derecha (Copiloto)',
+        RL: 'Tras. Izquierda (Pies cama)',
+        RR: 'Tras. Derecha (Cabeza cama)'
       };
 
-      // 4. Actualizar las 4 tarjetas de rueda
+      // 4. Actualizar las 4 tarjetas de rueda con los escalones Fiamma 7, 13, 17 y Tope 20 cm
       ['FL', 'FR', 'RL', 'RR'].forEach((id) => {
-        const drop = dropsCm[id]; // cm que está hundida respecto a la rueda más alta antes de calzar
-        const chockCm = bestPlan.chocks[id]; // 0, 4, 8 o 12 cm asignados por el plan óptimo
-        const afterDrop = bestPlan.residualDropsCm[id];
-        const exceedsMax = drop > 13.5 && chockCm === 12;
+        const rawDrop = dropsCm[id];
+        const roundedDrop = rawDrop < 0.25 ? 0 : roundHalfCm(rawDrop);
+        const directInfo = mapDropToDirectStep(rawDrop);
+        const assignedChockCm = bestPlan.chocks[id];
+        const exceedsLip20 = rawDrop > STEP_3_WARN_CM && assignedChockCm === 17;
 
         const cardEl = document.getElementById(`card-${id}`);
         const tagEl  = document.getElementById(`tag-${id}`);
@@ -1688,131 +1831,176 @@
         const barsEl = document.getElementById(`bars-${id}`).children;
         const metaEl = document.getElementById(`meta-${id}`);
 
-        // Reset barras
         for (let i = 0; i < 4; i++) {
           barsEl[i].className = `f-bar b${i + 1}`;
         }
 
-        if (chockCm === 0) {
+        if (assignedChockCm === 0) {
           cardEl.className = 'wheel-card step-0-border';
-          tagEl.className = 'chock-tag chock-tag-none';
-          tagEl.textContent = drop < 0.2 ? 'RUEDA ALTA' : 'SIN CALZO';
-
-          stepEl.className = 'step-pill pill-green';
-          stepEl.textContent = 'DEJAR EN SUELO (0 cm)';
-
-          if (drop < 0.2) {
-            metaEl.textContent = 'Desnivel actual: 0,0 cm (Referencia alta)';
-          } else if (drop < MIN_CHOCK_THRESHOLD_CM) {
-            metaEl.textContent = `Desnivel actual: -${fmtNum(drop)} cm (<2 cm · Ignorado)`;
+          if (rawDrop < MIN_CHOCK_THRESHOLD_CM) {
+            tagEl.className = 'chock-tag chock-tag-none';
+            tagEl.textContent = 'NIVELADA <4 cm';
+            stepEl.className = 'step-pill pill-green';
+            stepEl.textContent = 'SUELO (0 cm)';
+            metaEl.textContent = roundedDrop === 0
+              ? 'Rueda más alta (Base 0,0 cm)'
+              : `No calzar · < 4 cm (Caída ${fmtHalfCm(roundedDrop, false)})`;
           } else {
-            metaEl.textContent = `Desnivel actual: -${fmtNum(drop)} cm · Queda en suelo`;
+            // La rueda cae >= 4 cm pero el plan de 2 calzos calza las otras o prioriza postura
+            tagEl.className = 'chock-tag chock-tag-neutral';
+            tagEl.textContent = 'SIN CALZO';
+            stepEl.className = 'step-pill pill-green';
+            stepEl.textContent = 'SUELO (0 cm)';
+            metaEl.textContent = `Caída ${fmtHalfCm(roundedDrop, true)} · (${directInfo.rangeText})`;
           }
         } else {
           const cNum = chockNumberMap[id] || 1;
-          const stepIndex = chockCm === 4 ? 1 : (chockCm === 8 ? 2 : 3);
+          const stepIndex = assignedChockCm === 7 ? 1 : (assignedChockCm === 13 ? 2 : 3);
 
-          if (exceedsMax) {
+          if (exceedsLip20) {
             cardEl.className = 'wheel-card step-4-border';
             tagEl.className = 'chock-tag chock-tag-warn';
-            tagEl.textContent = `CALZO ${cNum} · LÍMITE`;
+            tagEl.textContent = `CALZO ${cNum} (${fmtHalfCm(roundedDrop, true)})`;
             stepEl.className = 'step-pill pill-red';
-            stepEl.textContent = `SUBIR ESCALÓN 3 (12 cm) · ⚠️ PIDE -${fmtNum(drop)} cm`;
+            stepEl.textContent = '⚠️ >17 cm (Tope 20 cm)';
             barsEl[2].classList.add('active-3');
             barsEl[3].classList.add('active-4');
+            metaEl.textContent = `Falta ${fmtHalfCm(roundedDrop, true)} · Usar 17 cm (No subir al labio 20 cm)`;
           } else {
             const borderMap = { 1: 'step-1-border', 2: 'step-2-border', 3: 'step-3-border' };
             const pillMap   = { 1: 'pill-blue',     2: 'pill-amber',    3: 'pill-orange' };
             cardEl.className = `wheel-card ${borderMap[stepIndex]}`;
             tagEl.className = 'chock-tag chock-tag-active';
-            tagEl.textContent = `PONER CALZO ${cNum}`;
+            tagEl.textContent = `CALZO ${cNum} (${fmtHalfCm(roundedDrop, true)})`;
             stepEl.className = `step-pill ${pillMap[stepIndex]}`;
-            stepEl.textContent = `SUBIR ESCALÓN ${stepIndex} (${chockCm} cm)`;
+            stepEl.textContent = `ESCALÓN ${stepIndex} (${assignedChockCm} cm)`;
             barsEl[stepIndex - 1].classList.add(`active-${stepIndex}`);
+            metaEl.textContent = `Subir ${fmtHalfCm(roundedDrop, true)} → Cuna de ${assignedChockCm} cm`;
           }
-
-          metaEl.textContent = `Actual: -${fmtNum(drop)} cm → Sube +${chockCm} cm (Resto: -${fmtNum(afterDrop)} cm)`;
         }
       });
 
-      // 5. Actualizar Banner Multilínea Completo (sin truncar) + Consejo de Giro 180°
-      const planBadgeEl = document.getElementById('planResidualBadge');
-      const planTextEl  = document.getElementById('planMainText');
+      // 5. Banner de Plan de Acción con tus 2 Calzos Fiamma (7 / 13 / 17 cm)
+      const planBoxEl    = document.getElementById('planBannerBox');
+      const planTitleEl  = document.getElementById('planTitleLabel');
+      const planBadgeEl  = document.getElementById('planResidualBadge');
+      const planTextEl   = document.getElementById('planMainText');
       const rotateHintEl = document.getElementById('planRotateHint');
 
-      const afterHeadDiff = bestPlan.headMinusFeetRearCm;
+      const afterHeadDiff = roundHalfCm(bestPlan.headMinusFeetRearCm);
       const afterPitchDeg = bestPlan.newPitchDeg;
 
+      planTitleEl.textContent = state.priorityMode === 'SLEEP'
+        ? '🛠️ QUÉ HACER CON TUS 2 CALZOS (PRIORIDAD DORMIR)'
+        : '🛠️ QUÉ HACER CON TUS 2 CALZOS (PLANO PURO)';
+
       if (wheelOrder.length === 0) {
-        planBadgeEl.textContent = 'SIN CALZOS';
+        planBoxEl.classList.add('plan-ok-green');
+        planBadgeEl.textContent = 'NIVELADA SIN CALZOS (< 4 cm)';
         planBadgeEl.className = 'text-[10px] font-extrabold text-emerald-400';
         planTextEl.innerHTML =
-          `✅ <strong>No necesitas poner calzos:</strong> Las diferencias son menores de 2,0 cm o ya tienes buena postura de cama ` +
-          `(Cabeza <strong>${fmtSignedCm(afterHeadDiff)}</strong> respecto a los pies · Cabeceo <strong>${fmtNum(Math.abs(afterPitchDeg))}°</strong>).`;
+          `✅ <strong>FURGONETA NIVELADA SIN CALZOS:</strong> Desnivel inferior a 4,0 cm (máx. ${fmtHalfCm(maxDropCm, false)}). Lista para pernoctar sin sacar los Fiamma.<br/>` +
+          `<strong>Postura en cama:</strong> Cabeza en copiloto a <strong>${fmtHalfCm(afterHeadDiff, true)}</strong> respecto a los pies · Cabeceo <strong>${fmtNum(Math.abs(afterPitchDeg))}°</strong>.`;
       } else {
-        const actionsList = wheelOrder.map((w, idx) => {
+        planBoxEl.classList.remove('plan-ok-green');
+        const line1Parts = wheelOrder.map((w, idx) => {
           const cCm = bestPlan.chocks[w];
-          const sIdx = cCm === 4 ? 1 : (cCm === 8 ? 2 : 3);
-          return `<strong>Calzo ${idx + 1}</strong> en <strong>${wheelLabels[w]}</strong> → <strong>Escalón ${sIdx} (${cCm} cm)</strong>`;
+          const sIdx = cCm === 7 ? 1 : (cCm === 13 ? 2 : 3);
+          const warn20 = dropsCm[w] > STEP_3_WARN_CM && cCm === 17;
+          return warn20
+            ? `<strong>Calzo ${idx + 1}:</strong> ${wheelLabels[w]} en <strong>Escalón 3 (17 cm · ⚠️ Tope 20 cm)</strong>`
+            : `<strong>Calzo ${idx + 1}:</strong> ${wheelLabels[w]} en <strong>Escalón ${sIdx} (${cCm} cm)</strong>`;
         });
+        if (wheelOrder.length === 1) {
+          line1Parts.push(`<strong>Calzo 2:</strong> Sin usar`);
+        }
 
-        const anyOver135 = wheelOrder.some((w) => dropsCm[w] > 13.5);
-        planBadgeEl.textContent = anyOver135 ? '⚠️ PENDIENTE > 12 CM' : `${wheelOrder.length} CALZO${wheelOrder.length > 1 ? 'S' : ''} ACTIVO${wheelOrder.length > 1 ? 'S' : ''}`;
-        planBadgeEl.className = anyOver135
+        const anyOver185 = wheelOrder.some((w) => dropsCm[w] > STEP_3_WARN_CM);
+        planBadgeEl.textContent = anyOver185
+          ? '⚠️ >17 CM (TOPE 20 CM)'
+          : `USAR ${wheelOrder.length} CALZO${wheelOrder.length > 1 ? 'S' : ''} FIAMMA`;
+        planBadgeEl.className = anyOver185
           ? 'text-[10px] font-extrabold text-red-400'
           : 'text-[10px] font-extrabold text-sky-400';
 
-        let postSummary = `Tras subir: Cama con cabeza <strong>${fmtSignedCm(afterHeadDiff)}</strong> vs pies y giro longitudinal de <strong>${fmtNum(Math.abs(afterPitchDeg))}°</strong>.`;
-        if (anyOver135) {
-          postSummary += ` <span class="text-red-300 font-bold">(Atención: el terreno supera los 12 cm del 3º escalón; detente en la cuna de 12 cm sin pisar el tope de 16 cm).</span>`;
-        }
-
-        planTextEl.innerHTML = `Coloca ${actionsList.join(' y ')}.<br/>${postSummary}`;
+        planTextEl.innerHTML =
+          `${line1Parts.join(' · ')}<br/>` +
+          `<strong>Tras subir:</strong> Cabeza en copiloto a <strong>${fmtHalfCm(afterHeadDiff, true)}</strong> sobre los pies y giro longitudinal de <strong>${fmtNum(Math.abs(afterPitchDeg))}°</strong>.`;
       }
 
-      // Evaluar si girar la furgoneta 180° mejora claramente la situación
+      // Consejo táctico de girar la furgoneta 180° si evita sacar calzos o eleva la cabeza gratis
       if (
         (baseState.headMinusFeetRearCm < -1.5 && rotatedSolution.baseState.headMinusFeetRearCm > 1.0) ||
-        (bestPlan.cost - rotatedSolution.bestPlan.cost > 8.0)
+        (wheelOrder.length > 0 && rotatedSolution.bestPlan.chocksUsed === 0 && rotatedSolution.baseState.headMinusFeetRearCm >= 0) ||
+        (bestPlan.cost - rotatedSolution.bestPlan.cost > 9.0)
       ) {
         rotateHintEl.style.display = 'block';
         rotateHintEl.innerHTML =
-          `🔄 <strong>Consejo de aparcamiento (Giro 180°):</strong> Si aparcas la furgoneta mirando al revés, ` +
-          `la pendiente natural del suelo deja tu cabeza (Copiloto) <strong>+${fmtNum(rotatedSolution.baseState.headMinusFeetRearCm)} cm</strong> más alta que los pies antes incluso de poner calzos.`;
+          `🔄 <strong>Consejo de aparcamiento (Giro 180°):</strong> Si aparcas mirando al revés, la caída natural del terreno deja la cabeza <strong>${fmtHalfCm(rotatedSolution.baseState.headMinusFeetRearCm, true)}</strong> más alta que los pies.`;
       } else {
         rotateHintEl.style.display = 'none';
       }
 
-      // 6. Actualizar Panel de Escenarios de Habitabilidad (Según vista seleccionada: Tras Calzar vs Actual)
-      const activeEvalState = state.habViewMode === 'AFTER' ? bestPlan : baseState;
+      // 6. Matriz de Habitabilidad (Tras Calzar vs Suelo Actual)
+      const evalTarget = state.habViewMode === 'AFTER' ? bestPlan : baseState;
       const hab = evaluateHabitability(
-        activeEvalState.newPitchDeg,
-        activeEvalState.newRollDeg,
-        activeEvalState.headMinusFeetRearCm
+        evalTarget.newPitchDeg,
+        evalTarget.newRollDeg,
+        roundHalfCm(evalTarget.headMinusFeetRearCm)
       );
 
-      const applyHabCard = (key, data) => {
-        const badge = document.getElementById(`habBadge${key}`);
-        const desc  = document.getElementById(`habDesc${key}`);
-        badge.className = `hab-badge ${data.css}`;
-        badge.textContent = data.status;
-        desc.textContent = data.desc;
+      const applyHab = (key, item) => {
+        const b = document.getElementById(`habBadge${key}`);
+        const d = document.getElementById(`habDesc${key}`);
+        b.className = `hab-badge ${item.css}`;
+        b.textContent = item.status;
+        d.textContent = item.desc;
       };
+      applyHab('Sleep',  hab.sleep);
+      applyHab('Shower', hab.shower);
+      applyHab('Cook',   hab.cook);
+      applyHab('Table',  hab.table);
 
-      applyHabCard('Sleep',  hab.sleep);
-      applyHabCard('Shower', hab.shower);
-      applyHabCard('Cook',   hab.cook);
-      applyHabCard('Table',  hab.table);
+      // 7. Banner grande de ayuda en vivo en modo Radio Android del salpicadero
+      if (state.isRadioView) {
+        const stopBanner = document.getElementById('dashStopBanner');
+        const stopTitle  = document.getElementById('dashStopTitle');
+        const stopSub    = document.getElementById('dashStopSub');
+
+        if (wheelOrder.length === 0) {
+          stopBanner.className = 'dash-stop-banner visible state-stop';
+          stopTitle.textContent = '🛑 ¡PARA! YA ESTÁS EN EL ESCALÓN (NIVELADA < 4 cm)';
+          stopSub.textContent = `Cabeza ${fmtHalfCm(afterHeadDiff, true)} vs pies · Cabeceo ${fmtNum(Math.abs(afterPitchDeg))}° · Echa el freno de mano`;
+          if (!state.stopChimePlayed && state.remoteConnected) {
+            state.stopChimePlayed = true;
+            playTargetChime();
+          }
+        } else {
+          state.stopChimePlayed = false;
+          const w1 = wheelOrder[0];
+          const cCm = bestPlan.chocks[w1];
+          const sIdx = cCm === 7 ? 1 : (cCm === 13 ? 2 : 3);
+          const remCm = roundHalfCm(dropsCm[w1]);
+
+          stopBanner.className = remCm <= 7.5
+            ? 'dash-stop-banner visible state-near'
+            : 'dash-stop-banner visible state-go';
+          stopTitle.textContent = `⬆️ SUBE A ESCALÓN ${sIdx} (${cCm} cm) · FALTAN ${fmtHalfCm(remCm, false)}`;
+          stopSub.textContent = wheelOrder.length > 1
+            ? `Calzo 1: ${wheelLabels[wheelOrder[0]]} (${bestPlan.chocks[wheelOrder[0]]} cm) · Calzo 2: ${wheelLabels[wheelOrder[1]]} (${bestPlan.chocks[wheelOrder[1]]} cm)`
+            : `Calzo 1 en ${wheelLabels[w1]} → Escalón ${sIdx} (${cCm} cm)`;
+        }
+      }
     }
 
     /* ==========================================================================
-       6. INTERACCIÓN MANUAL, DIANA TÁCTIL Y BOTONES DE HERRAMIENTAS
+       6. CONTROLES TÁCTILES E INTERACCIÓN
        ========================================================================== */
-    function setOptimizationGoal(goal) {
-      state.optimizationGoal = goal === 'NEUTRAL' ? 'NEUTRAL' : 'SLEEP';
-      localStorage.setItem('ducato19_goal', state.optimizationGoal);
-      document.getElementById('modeBtnSleep').classList.toggle('active', state.optimizationGoal === 'SLEEP');
-      document.getElementById('modeBtnNeutral').classList.toggle('active', state.optimizationGoal === 'NEUTRAL');
+    function setPriorityMode(mode) {
+      state.priorityMode = mode === 'FLAT' ? 'FLAT' : 'SLEEP';
+      localStorage.setItem('p6a_ducato_prio_mode', state.priorityMode);
+      document.getElementById('prioBtnSleep').classList.toggle('active', state.priorityMode === 'SLEEP');
+      document.getElementById('prioBtnFlat').classList.toggle('active', state.priorityMode === 'FLAT');
       renderStabilizedNumbers(true);
     }
 
@@ -1825,14 +2013,12 @@
 
     function nudgeAngle(axis, delta) {
       if (axis === 'pitch') {
-        state.emaPitch = Math.max(-8.0, Math.min(8.0, Math.round((state.emaPitch + delta) * 10) / 10));
-        state.pitchBuffer = [state.emaPitch];
+        state.smoothPitch = Math.max(-9.0, Math.min(9.0, Math.round((state.smoothPitch + delta) * 10) / 10));
       } else {
-        state.emaRoll = Math.max(-8.0, Math.min(8.0, Math.round((state.emaRoll + delta) * 10) / 10));
-        state.rollBuffer = [state.emaRoll];
+        state.smoothRoll = Math.max(-9.0, Math.min(9.0, Math.round((state.smoothRoll + delta) * 10) / 10));
       }
-      const netP = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
-      const netR = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      const netP = state.isRadioView ? state.smoothPitch : state.smoothPitch - (state.hasTare ? state.tarePitch : 0);
+      const netR = state.isRadioView ? state.smoothRoll  : state.smoothRoll  - (state.hasTare ? state.tareRoll  : 0);
       renderFluidBubble(netP, netR);
       renderStabilizedNumbers(true);
     }
@@ -1848,13 +2034,11 @@
       const dx = Math.max(-maxR, Math.min(maxR, clientX - cx));
       const dy = Math.max(-maxR, Math.min(maxR, clientY - cy));
 
-      state.emaRoll  = (-dx / maxR) * 4.0 + (state.hasTare ? state.tareRoll : 0);
-      state.emaPitch = (-dy / maxR) * 4.0 + (state.hasTare ? state.tarePitch : 0);
-      state.pitchBuffer = [state.emaPitch];
-      state.rollBuffer  = [state.emaRoll];
+      state.smoothRoll  = (-dx / maxR) * 5.0 + (state.hasTare ? state.tareRoll : 0);
+      state.smoothPitch = (-dy / maxR) * 5.0 + (state.hasTare ? state.tarePitch : 0);
 
-      const netP = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
-      const netR = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      const netP = state.smoothPitch - (state.hasTare ? state.tarePitch : 0);
+      const netR = state.smoothRoll  - (state.hasTare ? state.tareRoll  : 0);
       renderFluidBubble(netP, netR);
       renderStabilizedNumbers(true);
     }
@@ -1874,94 +2058,83 @@
       isDraggingPad = false;
     });
 
-    function syncButtonsUI() {
+    function syncBottomButtonsUI() {
       const btnTare = document.getElementById('btnTare');
       const lblTare = document.getElementById('btnTareLabel');
       if (state.hasTare) {
         btnTare.classList.add('active-tare');
-        lblTare.textContent = '↺ BORRAR TARA';
+        lblTare.textContent = '↺ Borrar Tara';
       } else {
         btnTare.classList.remove('active-tare');
-        lblTare.textContent = '🎯 TARAR CERO';
+        lblTare.textContent = '🎯 Tarar Cero';
       }
-
-      const btnFreeze = document.getElementById('btnFreeze');
-      const lblFreeze = document.getElementById('btnFreezeLabel');
-      const pill = document.getElementById('statusPill');
-      const dot = document.getElementById('statusDot');
-      const statusTxt = document.getElementById('statusText');
-
-      if (state.isFrozen) {
-        btnFreeze.classList.add('active-freeze');
-        lblFreeze.textContent = '❄️ FIJADO';
-        pill.classList.add('frozen');
-        dot.classList.remove('blinking');
-        statusTxt.textContent = '❄️ CONGELADO';
-      } else {
-        btnFreeze.classList.remove('active-freeze');
-        lblFreeze.textContent = '❄️ CONGELAR';
-        pill.classList.remove('frozen');
-        dot.classList.add('blinking');
-        statusTxt.textContent = state.currentHz > 0 ? `🟢 EN VIVO · ${state.currentHz} Hz` : '🟢 PARÁMETROS';
-      }
-
       document.getElementById('btnOrientLabel').textContent = ORIENTATIONS[state.orientIdx].label;
-      document.getElementById('modeBtnSleep').classList.toggle('active', state.optimizationGoal === 'SLEEP');
-      document.getElementById('modeBtnNeutral').classList.toggle('active', state.optimizationGoal === 'NEUTRAL');
-
-      document.getElementById('subSpecsHeader').textContent =
-        `Batalla ${(state.wheelbaseMm / 10).toFixed(1).replace('.', ',')} cm · Vías ${state.frontTrackMm / 10}/${state.rearTrackMm / 10} cm`;
+      document.getElementById('prioBtnSleep').classList.toggle('active', state.priorityMode === 'SLEEP');
+      document.getElementById('prioBtnFlat').classList.toggle('active', state.priorityMode === 'FLAT');
     }
 
     document.getElementById('btnTare').addEventListener('click', () => {
       if (state.hasTare) {
         state.hasTare = false;
         state.tarePitch = 0.0;
-        state.tareRoll = 0.0;
+        state.tareRoll  = 0.0;
         localStorage.removeItem('p6a_ducato_has_tare');
         localStorage.removeItem('p6a_ducato_tare_p');
         localStorage.removeItem('p6a_ducato_tare_r');
       } else {
         state.hasTare = true;
-        state.tarePitch = state.emaPitch;
-        state.tareRoll = state.emaRoll;
+        state.tarePitch = state.smoothPitch;
+        state.tareRoll  = state.smoothRoll;
         localStorage.setItem('p6a_ducato_has_tare', '1');
         localStorage.setItem('p6a_ducato_tare_p', String(state.tarePitch));
         localStorage.setItem('p6a_ducato_tare_r', String(state.tareRoll));
       }
-      syncButtonsUI();
-      const netP = state.emaPitch - (state.hasTare ? state.tarePitch : 0);
-      const netR = state.emaRoll  - (state.hasTare ? state.tareRoll  : 0);
+      syncBottomButtonsUI();
+      const netP = state.smoothPitch - (state.hasTare ? state.tarePitch : 0);
+      const netR = state.smoothRoll  - (state.hasTare ? state.tareRoll  : 0);
       renderFluidBubble(netP, netR);
       renderStabilizedNumbers(true);
-    });
-
-    document.getElementById('btnFreeze').addEventListener('click', () => {
-      state.isFrozen = !state.isFrozen;
-      syncButtonsUI();
     });
 
     document.getElementById('btnOrient').addEventListener('click', () => {
       state.orientIdx = (state.orientIdx + 1) % ORIENTATIONS.length;
       localStorage.setItem('p6a_ducato_orient_idx', String(state.orientIdx));
-      state.pitchBuffer = [];
-      state.rollBuffer = [];
       state.hasInitialSample = false;
-      syncButtonsUI();
+      syncBottomButtonsUI();
       renderStabilizedNumbers(true);
     });
 
+    function playTargetChime() {
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      if (!state.audioCtx && AudioCtx) state.audioCtx = new AudioCtx();
+      if (!state.audioCtx) return;
+      if (state.audioCtx.state === 'suspended') state.audioCtx.resume();
+
+      const now = state.audioCtx.currentTime;
+      [880, 1174.66].forEach((freq, idx) => {
+        const osc = state.audioCtx.createOscillator();
+        const gain = state.audioCtx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, now + idx * 0.14);
+        gain.gain.setValueAtTime(0.16, now + idx * 0.14);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.24);
+        osc.connect(gain);
+        gain.connect(state.audioCtx.destination);
+        osc.start(now + idx * 0.14);
+        osc.stop(now + idx * 0.14 + 0.25);
+      });
+    }
+
     function scheduleBeep() {
       if (!state.audioOn || !state.audioCtx) return;
-      const pitchDeg = state.lockedPitchDeg;
-      const rollDeg  = state.lockedRollDeg;
-      const tilt = Math.hypot(pitchDeg, rollDeg);
-
+      const solution = solveBestTwoChockPlan(state.lockedPitchDeg, state.lockedRollDeg, state.priorityMode);
+      const isLeveledNoChocks = solution.bestPlan.chocksUsed === 0;
+      const tilt = Math.hypot(state.lockedPitchDeg, state.lockedRollDeg);
       const now = state.audioCtx.currentTime;
       const osc = state.audioCtx.createOscillator();
       const gain = state.audioCtx.createGain();
 
-      if (tilt <= 0.45) {
+      if (isLeveledNoChocks) {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(880, now);
         gain.gain.setValueAtTime(0.12, now);
@@ -1970,7 +2143,7 @@
         gain.connect(state.audioCtx.destination);
         osc.start(now);
         osc.stop(now + 0.3);
-        state.beepTimer = setTimeout(scheduleBeep, 900);
+        state.beepTimer = setTimeout(scheduleBeep, 950);
       } else {
         const freq = Math.min(760, Math.max(320, 740 - tilt * 80));
         const waitMs = Math.min(750, Math.max(140, tilt * 165));
@@ -1995,123 +2168,26 @@
         if (!state.audioCtx && AudioCtx) state.audioCtx = new AudioCtx();
         if (state.audioCtx && state.audioCtx.state === 'suspended') state.audioCtx.resume();
         btn.classList.add('active-audio');
-        lbl.textContent = '🔊 PITIDO: ON';
+        lbl.textContent = '🔊 Pitido: ON';
         scheduleBeep();
       } else {
         btn.classList.remove('active-audio');
-        lbl.textContent = '🔊 PITIDO: OFF';
+        lbl.textContent = '🔊 Pitido: OFF';
         if (state.beepTimer) clearTimeout(state.beepTimer);
       }
     });
 
-    /* ==========================================================================
-       7. MODAL DE PARÁMETROS Y REGISTRO PWA OFFLINE
-       ========================================================================== */
-    function updateModalComputedLabels() {
-      const wb = parseFloat(document.getElementById('inpWheelbaseMm').value) || DEFAULT_SPECS.wheelbaseMm;
-      const ft = parseFloat(document.getElementById('inpFrontTrackMm').value) || DEFAULT_SPECS.frontTrackMm;
-      const rt = parseFloat(document.getElementById('inpRearTrackMm').value) || DEFAULT_SPECS.rearTrackMm;
-
-      document.getElementById('lblHalfWheelbase').textContent = (wb / 20).toFixed(2).replace('.', ',') + ' cm';
-      document.getElementById('lblHalfFrontTrack').textContent = (ft / 20).toFixed(2).replace('.', ',') + ' cm';
-      document.getElementById('lblHalfRearTrack').textContent = (rt / 20).toFixed(2).replace('.', ',') + ' cm';
-      document.getElementById('lblActiveSensorSource').textContent = state.sensorSourceLabel;
-
-      ['MAX', 'MED', 'FAST'].forEach((m) => {
-        const btn = document.getElementById(`damp-${m}`);
-        if (btn) btn.classList.toggle('active', m === state.dampingMode);
-      });
-      document.getElementById('lblDampingDesc').textContent = DAMPING_PRESETS[state.dampingMode].desc;
-    }
-
-    function setDampingMode(mode) {
-      if (!DAMPING_PRESETS[mode]) return;
-      state.dampingMode = mode;
-      localStorage.setItem('ducato19_damping', mode);
-      state.pitchBuffer = [];
-      state.rollBuffer = [];
-      updateModalComputedLabels();
-      renderStabilizedNumbers(true);
-    }
-
-    function openSpecsModal() {
-      document.getElementById('inpWheelbaseMm').value = state.wheelbaseMm;
-      document.getElementById('inpFrontTrackMm').value = state.frontTrackMm;
-      document.getElementById('inpRearTrackMm').value = state.rearTrackMm;
-      updateModalComputedLabels();
-      document.getElementById('specsModal').classList.add('open');
-    }
-
-    function closeSpecsModal() {
-      document.getElementById('specsModal').classList.remove('open');
-    }
-
-    ['inpWheelbaseMm', 'inpFrontTrackMm', 'inpRearTrackMm'].forEach((id) => {
-      document.getElementById(id).addEventListener('input', updateModalComputedLabels);
-    });
-
-    document.getElementById('statusPill').addEventListener('click', openSpecsModal);
-    document.getElementById('btnCloseSpecs').addEventListener('click', closeSpecsModal);
-
-    document.getElementById('btnResetFactory').addEventListener('click', () => {
-      document.getElementById('inpWheelbaseMm').value = DEFAULT_SPECS.wheelbaseMm;
-      document.getElementById('inpFrontTrackMm').value = DEFAULT_SPECS.frontTrackMm;
-      document.getElementById('inpRearTrackMm').value = DEFAULT_SPECS.rearTrackMm;
-      setDampingMode('MAX');
-      updateModalComputedLabels();
-    });
-
-    document.getElementById('btnSaveSpecs').addEventListener('click', () => {
-      const wb = Math.max(2500, Math.min(5000, parseInt(document.getElementById('inpWheelbaseMm').value, 10) || DEFAULT_SPECS.wheelbaseMm));
-      const ft = Math.max(1400, Math.min(2200, parseInt(document.getElementById('inpFrontTrackMm').value, 10) || DEFAULT_SPECS.frontTrackMm));
-      const rt = Math.max(1400, Math.min(2200, parseInt(document.getElementById('inpRearTrackMm').value, 10) || DEFAULT_SPECS.rearTrackMm));
-
-      state.wheelbaseMm = wb;
-      state.frontTrackMm = ft;
-      state.rearTrackMm = rt;
-
-      localStorage.setItem('ducato19_wb_mm', String(wb));
-      localStorage.setItem('ducato19_ft_mm', String(ft));
-      localStorage.setItem('ducato19_rt_mm', String(rt));
-
-      syncButtonsUI();
-      renderStabilizedNumbers(true);
-      closeSpecsModal();
-    });
-
-    document.getElementById('btnDownloadIndex').addEventListener('click', () => {
-      const fullHtml = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-      const blob = new Blob([fullHtml], { type: 'text/html;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'index.html';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      setTimeout(() => URL.revokeObjectURL(url), 1500);
-    });
-
-    // Inyectar Web App Manifest dinámico para instalación PWA en Android
     function setupEmbeddedManifest() {
       try {
         const iconHref = document.getElementById('appIcon').getAttribute('href');
         const manifestObj = {
-          name: 'Nivelador Ducato L3H2 Maxi',
+          name: 'Nivelador Ducato L3H2 (Fiamma 7/13/17)',
           short_name: 'Nivel Ducato',
           start_url: '.',
           display: 'standalone',
           background_color: '#000000',
           theme_color: '#000000',
-          orientation: 'portrait',
-          icons: [
-            {
-              src: iconHref,
-              sizes: '512x512',
-              type: 'image/svg+xml',
-              purpose: 'any maskable'
-            }
-          ]
+          icons: [{ src: iconHref, sizes: '512x512', type: 'image/svg+xml', purpose: 'any maskable' }]
         };
         const blob = new Blob([JSON.stringify(manifestObj)], { type: 'application/manifest+json' });
         const link = document.createElement('link');
@@ -2123,10 +2199,11 @@
 
     window.addEventListener('DOMContentLoaded', () => {
       setupEmbeddedManifest();
-      syncButtonsUI();
+      syncBottomButtonsUI();
       renderFluidBubble(0, 0);
       renderStabilizedNumbers(true);
-      startPixelSensors();
+      startSensors();
+      connectBackgroundSync();
     });
   </script>
 </body>
